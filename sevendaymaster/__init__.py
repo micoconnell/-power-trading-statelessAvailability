@@ -66,8 +66,9 @@ async def main(mytimer: func.TimerRequest):
     now = datetime.now().strftime("%Y%m%d-%H%M%S")
     ##Events are labelled by datetime and concatted with .csv
     eventName = now + ".csv"
-
-
+    eventNameb = now + "b.csv"
+    eventNameHTML = now + ".html"
+    eventNameHTMLb = now + "b.html"
     ##Below is the same thing over and over again. Take comparison between drone and 
     ##master file and subtract master from drone.
     
@@ -78,6 +79,8 @@ async def main(mytimer: func.TimerRequest):
 #########################################################################################
     dfCoalResult = dfCoalMaster - dfCoal
     dfCoalResult = dfCoalResult.loc[dfCoalResult[dfCoalResult >= 100].any(axis=1)]
+    dfCoalResult = dfCoalResult.drop('Unnamed: 0.1', axis=1)
+    dfCoalResultHTML = dfCoalResult.to_html()
     if dfCoalResult.empty == False:
         
         dfCoalResult = dfCoalResult.to_csv()
@@ -85,15 +88,24 @@ async def main(mytimer: func.TimerRequest):
         blob_client = container_clientCoal.get_blob_client(eventName)
         container_clientCoal= blob_client.upload_blob(dfCoalResult,overwrite= True)
         
+        container_clientHTML = blob_service_client.get_container_client("sevenhtml")
+        blob_client = container_clientHTML.get_blob_client(eventNameHTML)
+        container_clientHTML= blob_client.upload_blob(dfCoalResultHTML,overwrite=True) 
+        
     dfCoalResulta = dfCoalMaster - dfCoal
     dfCoalResulta = dfCoalResulta.loc[dfCoalResulta[dfCoalResulta <= -100].any(axis=1)]
+    dfCoalResulta = dfCoalResulta.drop('Unnamed: 0.1', axis=1)
+    dfCoalResultaHTML = dfCoalResulta.to_html()
     if dfCoalResulta.empty == False:
         
         dfCoalResulta = dfCoalResulta.to_csv()
         container_clientCoal = blob_service_client.get_container_client("coalevents")
-        blob_client = container_clientCoal.get_blob_client(eventName)
+        blob_client = container_clientCoal.get_blob_client(eventNameb)
         container_clientCoal= blob_client.upload_blob(dfCoalResulta,overwrite= True)
         
+        container_clientHTML = blob_service_client.get_container_client("sevenhtml")
+        blob_client = container_clientHTML.get_blob_client(eventNameHTMLb)
+        container_clientHTML= blob_client.upload_blob(dfCoalResultaHTML,overwrite=True) 
 
     container_clientCoal = blob_service_client.get_container_client("mastercoal")
     blob_client = container_clientCoal.get_blob_client("coalMaster.csv")
@@ -130,21 +142,33 @@ async def main(mytimer: func.TimerRequest):
 
     dfgasResult = dfgasMaster - dfgas
     dfgasResult = dfgasResult.loc[dfgasResult[dfgasResult >= 100].any(axis=1)]
+    dfgasResult = dfgasResult.drop('Unnamed: 0.1', axis=1)
+    dfgasResultHTML = dfgasResult.to_html()
     if dfgasResult.empty == False:
         dfgasResult = dfgasResult.to_csv()
         container_clientgas = blob_service_client.get_container_client("gasevents")
         blob_client = container_clientgas.get_blob_client(eventName)
         container_clientgas= blob_client.upload_blob(dfgasResult,overwrite = True)
-    
+        
+        container_clientHTML = blob_service_client.get_container_client("sevenhtml")
+        blob_client = container_clientHTML.get_blob_client(eventNameHTML)
+        container_clientHTML= blob_client.upload_blob(dfgasResultHTML,overwrite=True) 
+        
     dfgasResulta = dfgasMaster - dfgas
     dfgasResulta = dfgasResulta.loc[dfgasResulta[dfgasResulta <= -100].any(axis=1)]
+    dfgasResulta = dfgasResulta.drop('Unnamed: 0.1', axis=1)
+    dfgasResultHTMLa = dfgasResulta.to_html()
     if dfgasResulta.empty == False:
+        
         dfgasResulta = dfgasResulta.to_csv()
         container_clientgas = blob_service_client.get_container_client("gasevents")
-        blob_client = container_clientgas.get_blob_client(eventName)
+        blob_client = container_clientgas.get_blob_client(eventNameb)
         container_clientgas= blob_client.upload_blob(dfgasResulta,overwrite = True)
     
-    
+        container_clientHTML = blob_service_client.get_container_client("sevenhtml")
+        blob_client = container_clientHTML.get_blob_client(eventNameHTMLb)
+        container_clientHTML= blob_client.upload_blob(dfgasResultHTMLa,overwrite=True)
+         
     container_clientgas = blob_service_client.get_container_client("mastergas")
     blob_client = container_clientgas.get_blob_client("gasMaster.csv")
     container_clientgas= blob_client.upload_blob(dfgasstagnant,overwrite=True)
@@ -182,23 +206,35 @@ async def main(mytimer: func.TimerRequest):
 
     dfdualResult = dfdualMaster - dfdual
     dfdualResult = dfdualResult.loc[dfdualResult[dfdualResult >= 100].any(axis=1)]
+    dfdualResult = dfdualResult.drop('Unnamed: 0.1', axis=1)
+    dfdualResultHTML = dfdualResult.to_html()
+    
     if dfdualResult.empty == False:
         
         dfdualResult = dfdualResult.to_csv()
         container_clientdual = blob_service_client.get_container_client("dualevents")
         blob_client = container_clientdual.get_blob_client(eventName)
         container_clientdual= blob_client.upload_blob(dfdualResult,overwrite = True)
+        
+        container_clientHTML = blob_service_client.get_container_client("sevenhtml")
+        blob_client = container_clientHTML.get_blob_client(eventNameHTML)
+        container_clientHTML= blob_client.upload_blob(dfdualResultHTML,overwrite=True) 
     
     dfdualResulta = dfdualMaster - dfdual
     dfdualResulta = dfdualResulta.loc[dfdualResulta[dfdualResulta <= -100].any(axis=1)]
+    dfdualResulta = dfdualResulta.drop('Unnamed: 0.1', axis=1)
+    dfdualResultaHTML = dfdualResulta.to_html()
     if dfdualResulta.empty == False:
         
         dfdualResulta = dfdualResulta.to_csv()
         container_clientdual = blob_service_client.get_container_client("dualevents")
-        blob_client = container_clientdual.get_blob_client(eventName)
+        blob_client = container_clientdual.get_blob_client(eventNameb)
         container_clientdual= blob_client.upload_blob(dfdualResulta,overwrite = True)
     
-    
+        container_clientHTML = blob_service_client.get_container_client("sevenhtml")
+        blob_client = container_clientHTML.get_blob_client(eventNameHTMLb)
+        container_clientHTML= blob_client.upload_blob(dfdualResultaHTML,overwrite=True) 
+        
     container_clientdual = blob_service_client.get_container_client("masterdual")
     blob_client = container_clientdual.get_blob_client("dualMaster.csv")
     container_clientdual= blob_client.upload_blob(dfdualstagnant,overwrite=True)
@@ -235,22 +271,34 @@ async def main(mytimer: func.TimerRequest):
 
     dfhydroResult = dfhydroMaster - dfhydro
     dfhydroResult = dfhydroResult.loc[dfhydroResult[dfhydroResult >= 100].any(axis=1)]
+    dfhydroResult = dfhydroResult.drop('Unnamed: 0.1', axis=1)
+    dfhydroResultHTML = dfhydroResult.to_html()
+    
     if dfhydroResult.empty == False:
         
         dfhydroResult = dfhydroResult.to_csv()
         container_clienthydro = blob_service_client.get_container_client("hydroevents")
         blob_client = container_clienthydro.get_blob_client(eventName)
         container_clienthydro= blob_client.upload_blob(dfhydroResult,overwrite = True)
+        
+        container_clientHTML = blob_service_client.get_container_client("sevenhtml")
+        blob_client = container_clientHTML.get_blob_client(eventNameHTML)
+        container_clientHTML= blob_client.upload_blob(dfhydroResultHTML,overwrite=True) 
     
     dfhydroResulta = dfhydroMaster - dfhydro
     dfhydroResulta = dfhydroResulta.loc[dfhydroResulta[dfhydroResulta <= -100].any(axis=1)]
+    dfhydroResulta = dfhydroResulta.drop('Unnamed: 0.1', axis=1)
+    dfhydroResultaHTML = dfhydroResulta.to_html()
     if dfhydroResulta.empty == False:
         
         dfhydroResulta = dfhydroResulta.to_csv()
         container_clienthydro = blob_service_client.get_container_client("hydroevents")
-        blob_client = container_clienthydro.get_blob_client(eventName)
+        blob_client = container_clienthydro.get_blob_client(eventNameb)
         container_clienthydro= blob_client.upload_blob(dfhydroResulta,overwrite = True)
-    
+        
+        container_clientHTML = blob_service_client.get_container_client("sevenhtml")
+        blob_client = container_clientHTML.get_blob_client(eventNameHTMLb)
+        container_clientHTML= blob_client.upload_blob(dfhydroResultaHTML,overwrite=True) 
     
     container_clienthydro = blob_service_client.get_container_client("masterhydro")
     blob_client = container_clienthydro.get_blob_client("hydroMaster.csv")
@@ -289,22 +337,33 @@ async def main(mytimer: func.TimerRequest):
 
     dfotherResult = dfotherMaster - dfother
     dfotherResult = dfotherResult.loc[dfotherResult[dfotherResult >= 100].any(axis=1)]
+    dfotherResult = dfotherResult.drop('Unnamed: 0.1', axis=1)
+    dfotherResultHTML = dfotherResult.to_html()
     if dfotherResult.empty == False:
         
         dfotherResult = dfotherResult.to_csv()
         container_clientother = blob_service_client.get_container_client("otherevents")
         blob_client = container_clientother.get_blob_client(eventName)
         container_clientother= blob_client.upload_blob(dfotherResult,overwrite = True)
+        
+        container_clientHTML = blob_service_client.get_container_client("sevenhtml")
+        blob_client = container_clientHTML.get_blob_client(eventNameHTML)
+        container_clientHTML= blob_client.upload_blob(dfotherResultHTML,overwrite=True) 
 
     dfotherResulta = dfotherMaster - dfother
     dfotherResulta = dfotherResulta.loc[dfotherResulta[dfotherResulta <= -100].any(axis=1)]
+    dfotherResulta = dfotherResulta.drop('Unnamed: 0.1', axis=1)
+    dfgasResultHTMLb = dfgasResulta.to_html()
     if dfotherResulta.empty == False:
         
         dfotherResulta = dfotherResulta.to_csv()
         container_clientother = blob_service_client.get_container_client("otherevents")
-        blob_client = container_clientother.get_blob_client(eventName)
+        blob_client = container_clientother.get_blob_client(eventNameb)
         container_clientother= blob_client.upload_blob(dfotherResulta,overwrite = True)
 
+        container_clientHTML = blob_service_client.get_container_client("sevenhtml")
+        blob_client = container_clientHTML.get_blob_client(eventNameHTMLb)
+        container_clientHTML= blob_client.upload_blob(dfgasResultHTMLb,overwrite=True) 
     
     container_clientother = blob_service_client.get_container_client("masterother")
     blob_client = container_clientother.get_blob_client("otherMaster.csv")
@@ -345,21 +404,33 @@ async def main(mytimer: func.TimerRequest):
 
     dfstorageResult = dfstorageMaster - dfstorage
     dfstorageResult = dfstorageResult.loc[dfstorageResult[dfstorageResult >= 100].any(axis=1)]
+    dfstorageResult = dfstorageResult.drop('Unnamed: 0.1', axis=1)
+    dfstorageResultHTML = dfstorageResult.to_html()
     if dfstorageResult.empty == False:
         
         dfstorageResult = dfstorageResult.to_csv()
         container_clientstorage = blob_service_client.get_container_client("storageevents")
         blob_client = container_clientstorage.get_blob_client(eventName)
         container_clientstorage= blob_client.upload_blob(dfstorageResult,overwrite = True)
+        
+        container_clientHTML = blob_service_client.get_container_client("sevenhtml")
+        blob_client = container_clientHTML.get_blob_client(eventNameHTML)
+        container_clientHTML= blob_client.upload_blob(dfstorageResultHTML,overwrite=True) 
     
     dfstorageResulta = dfstorageMaster - dfstorage
     dfstorageResulta = dfstorageResulta.loc[dfstorageResulta[dfstorageResulta <= -100].any(axis=1)]
+    dfstorageResulta = dfstorageResulta.drop('Unnamed: 0.1', axis=1)
+    dfstorageResultaHTML = dfstorageResulta.to_html()
     if dfstorageResulta.empty == False:
         
         dfstorageResulta = dfstorageResulta.to_csv()
         container_clientstorage = blob_service_client.get_container_client("storageevents")
-        blob_client = container_clientstorage.get_blob_client(eventName)
-        container_clientstorage= blob_client.upload_blob(dfstorageResulta,overwrite = True) 
+        blob_client = container_clientstorage.get_blob_client(eventNameb)
+        container_clientstorage= blob_client.upload_blob(dfstorageResulta,overwrite = True)
+        
+        container_clientHTML = blob_service_client.get_container_client("sevenhtml")
+        blob_client = container_clientHTML.get_blob_client(eventNameHTMLb)
+        container_clientHTML= blob_client.upload_blob(dfstorageResultaHTML,overwrite=True)  
 
     container_clientstorage = blob_service_client.get_container_client("masterstorage")
     blob_client = container_clientstorage.get_blob_client("storageMaster.csv")
@@ -399,22 +470,33 @@ async def main(mytimer: func.TimerRequest):
 
     dfsolarResult = dfsolarMaster - dfsolar
     dfsolarResult = dfsolarResult.loc[dfsolarResult[dfsolarResult >= 100].any(axis=1)]
+    dfsolarResult = dfsolarResult.drop('Unnamed: 0.1', axis=1)
+    dfsolarResultHTML = dfsolarResult.to_html()
     if dfsolarResult.empty == False:
         
         dfsolarResult = dfsolarResult.to_csv()
         container_clientsolar = blob_service_client.get_container_client("solarevents")
         blob_client = container_clientsolar.get_blob_client(eventName)
         container_clientsolar= blob_client.upload_blob(dfsolarResult,overwrite = True)
+        
+        container_clientHTML = blob_service_client.get_container_client("sevenhtml")
+        blob_client = container_clientHTML.get_blob_client(eventNameHTML)
+        container_clientHTML= blob_client.upload_blob(dfsolarResultHTML,overwrite=True)
     
     dfsolarResulta = dfsolarMaster - dfsolar
     dfsolarResulta = dfsolarResulta.loc[dfsolarResulta[dfsolarResulta <= -100].any(axis=1)]
+    dfsolarResulta = dfsolarResulta.drop('Unnamed: 0.1', axis=1)
+    dfsolarResultHTMLb = dfsolarResulta.to_html()
     if dfsolarResulta.empty == False:
         
         dfsolarResulta = dfsolarResulta.to_csv()
         container_clientsolar = blob_service_client.get_container_client("solarevents")
-        blob_client = container_clientsolar.get_blob_client(eventName)
+        blob_client = container_clientsolar.get_blob_client(eventNameb)
         container_clientsolar= blob_client.upload_blob(dfsolarResulta,overwrite = True)
-    
+        
+        container_clientHTML = blob_service_client.get_container_client("sevenhtml")
+        blob_client = container_clientHTML.get_blob_client(eventNameHTMLb)
+        container_clientHTML= blob_client.upload_blob(dfsolarResultHTMLb,overwrite=True)
     
     container_clientsolar = blob_service_client.get_container_client("mastersolar")
     blob_client = container_clientsolar.get_blob_client("solarMaster.csv")
@@ -455,6 +537,8 @@ async def main(mytimer: func.TimerRequest):
 
     dfwindResult = dfwindMaster - dfwind
     dfwindResult = dfwindResult.loc[dfwindResult[dfwindResult >= 100].any(axis=1)]
+    dfwindResult = dfwindResult.drop('Unnamed: 0.1', axis=1)
+    dfwindResultHTML = dfwindResult.to_html()
     if dfwindResult.empty == False:
         
         dfwindResult = dfwindResult.to_csv()
@@ -462,14 +546,22 @@ async def main(mytimer: func.TimerRequest):
         blob_client = container_clientwind.get_blob_client(eventName)
         container_clientwind= blob_client.upload_blob(dfwindResult,overwrite = True)
     
+    
+        container_clientHTML = blob_service_client.get_container_client("sevenhtml")
+        blob_client = container_clientHTML.get_blob_client(eventName)
+        container_clientHTML= blob_client.upload_blob(dfwindResultHTML,overwrite=True)
+        
+        
     dfwindResulta = dfwindMaster - dfwind
     dfwindResulta = dfwindResulta.loc[dfwindResulta[dfwindResulta <= -100].any(axis=1)]
+    dfwindResulta = dfwindResulta.drop('Unnamed: 0.1', axis=1)
+    dfwindResultHTMLb = dfwindResulta.to_html()
     if dfwindResulta.empty == False:
         
         dfwindResulta = dfwindResulta.to_csv()
         container_clientwind = blob_service_client.get_container_client("windevents")
         blob_client = container_clientwind.get_blob_client(eventName)
-        container_clientwind= blob_client.upload_blob(dfwindResulta,overwrite = True)
+        container_clientwind= blob_client.upload_blob(dfwindResultHTMLb,overwrite = True)
     
     
     container_clientwind = blob_service_client.get_container_client("masterwind")

@@ -20,6 +20,7 @@ def main(mytimer: func.TimerRequest) -> None:
     df2 = df2.set_index('Date')
     
     ## Convert into comma seperated file for easy upload to blob storage.
+    df2 = df2.round(0)
     df2 = df2.to_csv()
     
     ##Upload Drone file to 90daydrone.csv in Sevendaypremium blob storage. Overwrite == true as file is replaced 

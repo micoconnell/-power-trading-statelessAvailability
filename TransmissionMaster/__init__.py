@@ -49,7 +49,7 @@ def main(mytimer: func.TimerRequest) :
     
     df = pd.merge(df_diffNEWMASTER, dfMaster, how='left', indicator='Exist')
     df['Exist'] = np.where(df.Exist == 'both', True, False)
-    print(df)
+
     ##False makes all the newer ones appear
     ## True keeps all the old files
     dfNEW = df[df['Exist']==False].drop(['Exist','Outage #'], axis=1)
@@ -57,7 +57,7 @@ def main(mytimer: func.TimerRequest) :
     ## df is the change log. 
     ## df_diffNEWMASTER is the new Master file and the complete schedule
 
-    if dfDrone.equals(dfMaster) == False :
+    if dfNEW.empty == False :
         ## If new drone is different, upload and the replace master file
         container_clientMaster = blob_service_client.get_container_client("transmissionmaster")
         blob_client = container_clientMaster.get_blob_client("transmissionmaster.csv")

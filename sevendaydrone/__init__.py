@@ -91,14 +91,22 @@ async def main(mytimer: func.TimerRequest):
         
         
         #
-        dfCOAL = df[0:7] 
+        dfCOAL = df[0:7]
+        dfCOAL = dfCOAL.round(0) 
         dfGAS = df[7:14]
+        dfGAS = dfGAS.round(0) 
         dfDUAL = df[14:21]
+        dfDUAL = dfDUAL.round(0) 
         dfHYDRO = df[21:28]
+        dfHYDRO = dfHYDRO.round(0) 
         dfWIND = df[28:35]
+        dfWIND = dfWIND.round(0) 
         dfSOLAR = df[35:42]
+        dfSOLAR = dfSOLAR.round(0) 
         dfSTORAGE = df[42:49]
+        dfSTORAGE = dfSTORAGE.round(0) 
         dfOTHER = df[49:56]
+        dfOTHER = dfOTHER.round(0) 
         blob_service_client = BlobServiceClient.from_connection_string("DefaultEndpointsProtocol=https;AccountName=sevendaypremium;AccountKey=YeFdLE5sLLsVceijHjRczp3GgZ70AtN4pHmTDlL73a98Om5SmWVL3WIA9xWo4hQ84u3FCirCqM3P+AStlvSSrQ==;EndpointSuffix=core.windows.net")
         container_clientCoal = blob_service_client.get_container_client("outcoal7day")
         container_clientGas = blob_service_client.get_container_client("outgas7day")
@@ -108,14 +116,14 @@ async def main(mytimer: func.TimerRequest):
         container_clientWind = blob_service_client.get_container_client("outwind7day")
         container_clientStorage = blob_service_client.get_container_client("outstorage7day")
         container_clientOther = blob_service_client.get_container_client("outother7day")
-        dfCOAL = dfCOAL.to_csv("coal.csv")
-        dfGAS = dfGAS.to_csv("gas.csv")
-        dfHYDRO = dfHYDRO.to_csv("hydro.csv")
-        dfDUAL = dfDUAL.to_csv("dual.csv")
-        dfSOLAR = dfSOLAR.to_csv("solar.csv")
-        dfWIND = dfWIND.to_csv("wind.csv")
-        dfSTORAGE = dfSTORAGE.to_csv("storage.csv")
-        dfOTHER = dfOTHER.to_csv("other.csv")
+        dfCOAL = dfCOAL.to_csv()
+        dfGAS = dfGAS.to_csv()
+        dfHYDRO = dfHYDRO.to_csv()
+        dfDUAL = dfDUAL.to_csv()
+        dfSOLAR = dfSOLAR.to_csv()
+        dfWIND = dfWIND.to_csv()
+        dfSTORAGE = dfSTORAGE.to_csv()
+        dfOTHER = dfOTHER.to_csv()
         
         #Final uploads for drones by asset type
         blob_client = container_clientCoal.get_blob_client("coal.csv")

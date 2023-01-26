@@ -11,7 +11,7 @@ def main(mytimer: func.TimerRequest) -> None:
     DFMONTHLY = pd.read_html(URLMONTH)
     DFMONTHLY = DFMONTHLY[2]
     DFMONTHLY = DFMONTHLY.set_index('Month')
-    print(DFMONTHLY)
+    DFMONTHLY = DFMONTHLY.round(0)
     DFMONTHLY = DFMONTHLY.to_csv()
     ##Set month as index and push to drone file in monthlydrone
     eventName = "monthlydrone.csv"
