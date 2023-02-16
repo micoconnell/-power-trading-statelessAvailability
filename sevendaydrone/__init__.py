@@ -23,7 +23,7 @@ async def main(mytimer: func.TimerRequest):
 
         df = pd.read_html(url)[2]
         df = pd.DataFrame(df)
-        print(df)
+        
         ## Pick correct table, and drop blank web-ding looking rows.
 
         df = df.drop(df.index [ [ 8,16,24,32,40,48,56 ] ])

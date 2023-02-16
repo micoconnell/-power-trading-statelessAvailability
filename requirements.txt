@@ -9,3 +9,4 @@ requests
 lxml
 xlrd
 dataframe_image
+pyodbc

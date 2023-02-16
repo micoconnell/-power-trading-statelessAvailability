@@ -10,6 +10,8 @@ def main(mytimer: func.TimerRequest) -> None:
     URLMONTH = 'http://ets.aeso.ca/ets_web/ip/Market/Reports/MonthlyOutageForecastReportServlet?contentType=html'
     DFMONTHLY = pd.read_html(URLMONTH)
     DFMONTHLY = DFMONTHLY[2]
+    DFMONTHLY['Month'] = DFMONTHLY['Month'].astype('string')
+    DFMONTHLY['Month'] = pd.to_datetime(DFMONTHLY['Month'])
     DFMONTHLY = DFMONTHLY.set_index('Month')
     DFMONTHLY = DFMONTHLY.round(0)
     DFMONTHLY = DFMONTHLY.to_csv()

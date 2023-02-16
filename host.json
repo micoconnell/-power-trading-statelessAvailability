@@ -12,8 +12,18 @@
     "id": "Microsoft.Azure.Functions.ExtensionBundle",
     "version": "[3.*, 4.0.0)"
   },
+  "functions": ["StackModelGroupingGas","UpdateMonthlyAgainstKnown","PriceTrigger","TransmissionMaster","dailyDrone","dailyMaster","MonthlyDrone","MonthlyMaster","sevendaydrone","sevendaymaster","TransmissionDrone","MonthlyOutageSQLUpdate", "DailyOutageSQLUpdate" ],
+  "functionTimeout": "02:00:00",
+  "healthMonitor": {
+      "enabled": false,
+      "healthCheckInterval": "00:00:10",
+      "healthCheckWindow": "00:02:00",
+      "healthCheckThreshold": 6,
+      "counterThreshold": 0.80
+  },
   "concurrency": {
     "dynamicConcurrencyEnabled": true,
     "snapshotPersistenceEnabled": true
   }
 }
+
