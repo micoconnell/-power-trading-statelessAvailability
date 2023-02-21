@@ -83,30 +83,35 @@ async def main(mytimer: func.TimerRequest):
     dfCoalResult = dfCoalResult.drop('Unnamed: 0.1', axis=1)
     
     dfCoalResult=dfCoalResult.reset_index()
+    dfCoalResultJSON = dfCoalResult
+    
     dfCoalResult = pd.melt(dfCoalResult, id_vars=["Date","Type"], value_vars=list(dfCoalResult.columns[1:]))
     dfCoalResult["Date_Time"] = dfCoalResult["Date"].astype("string") + " " + dfCoalResult["variable"]
     dfCoalResult=dfCoalResult.drop(["variable","Date"],axis=1)
     dfCoalResult=dfCoalResult.set_index(['Date_Time'])
     dfCoalResult=dfCoalResult.sort_index()
     dfCoalResult['value'] = dfCoalResult['value'].astype('int')
-    
+
     
     
     
     
     dfCoalResultHTML = dfCoalResult.to_html()
     if dfCoalResult.empty == False:
-        dfCoalResult['Type'] = dfCoalResult['Type'].str.strip()
-        dfCoalResult = dfCoalResult.to_json(orient="index",indent=1)
+        # dfCoalResultJSON=dfCoalResultJSON.loc[:,'Date':'HE24']
+        # result = {row['Date']: row.loc['HE01':'HE24'].to_dict() for _, row in dfCoalResultJSON.iterrows()}
+        # data = {'type': dfCoalResultJSON.loc[0,'Type'].strip(),'dates':result}
+
+
         
         container_clientCoal = blob_service_client.get_container_client("coalevents")
         blob_client = container_clientCoal.get_blob_client(eventName)
         container_clientCoal= blob_client.upload_blob(dfCoalResult,overwrite= True)
         
         
-        container_clientCOAL1 = blob_service_client1.get_container_client("sevenday")
-        blob_client1= container_clientCOAL1.get_blob_client(eventName)
-        container_clientCOAL1= blob_client1.upload_blob(dfCoalResult,overwrite=True)
+        # container_clientCOAL1 = blob_service_client1.get_container_client("sevenday")
+        # blob_client1= container_clientCOAL1.get_blob_client(eventName)
+        # container_clientCOAL1= blob_client1.upload_blob(data,overwrite=True)
         
         container_clientHTML = blob_service_client.get_container_client("sevenhtml")
         blob_client = container_clientHTML.get_blob_client(eventNameHTML)
@@ -118,6 +123,9 @@ async def main(mytimer: func.TimerRequest):
     
     
     dfCoalResulta=dfCoalResulta.reset_index()
+    dfCoalResultaJSON = dfCoalResulta
+
+
     dfCoalResulta = pd.melt(dfCoalResulta, id_vars=["Date","Type"], value_vars=list(dfCoalResulta.columns[1:]))
     dfCoalResulta["Date_Time"] = dfCoalResulta["Date"].astype("string") + " " + dfCoalResulta["variable"]
     dfCoalResulta=dfCoalResulta.drop(["variable","Date"],axis=1)
@@ -126,16 +134,17 @@ async def main(mytimer: func.TimerRequest):
     dfCoalResulta['value'] = dfCoalResulta['value'].astype('int')
     dfCoalResultaHTML = dfCoalResulta.to_html()
     if dfCoalResulta.empty == False:
-        dfCoalResulta['Type'] = dfCoalResulta['Type'].str.strip()
-        dfCoalResulta = dfCoalResulta.to_json(orient="index",indent=1)
+        # dfCoalResultaJSON = dfCoalResultaJSON.loc[:,'Date':'HE24']
+        # result = {row['Date']: row.loc['HE01':'HE24'].to_dict() for _, row in dfCoalResultaJSON.iterrows()}
+        # data = {'type': dfCoalResultaJSON.loc[0,'Type'].strip(),'dates':result}
         
         container_clientCoal = blob_service_client.get_container_client("coalevents")
         blob_client = container_clientCoal.get_blob_client(eventNameb)
         container_clientCoal= blob_client.upload_blob(dfCoalResulta,overwrite= True)
         
-        container_clientCOAL1 = blob_service_client1.get_container_client("sevenday")
-        blob_client1= container_clientCOAL1.get_blob_client(eventName)
-        container_clientCOAL1= blob_client1.upload_blob(dfCoalResulta,overwrite=True)
+        # container_clientCOAL1 = blob_service_client1.get_container_client("sevenday")
+        # blob_client1= container_clientCOAL1.get_blob_client(eventName)
+        # container_clientCOAL1= blob_client1.upload_blob(data,overwrite=True)
         
         container_clientHTML = blob_service_client.get_container_client("sevenhtml")
         blob_client = container_clientHTML.get_blob_client(eventNameHTMLb)
@@ -176,27 +185,35 @@ async def main(mytimer: func.TimerRequest):
 
     dfgasResult = dfgasMaster - dfgas
     dfgasResult = dfgasResult.loc[dfgasResult[dfgasResult >= 100].any(axis=1)]
-    dfgasResult = dfgasResult.drop('Unnamed: 0.1', axis=1)
+    #dfgasResult = dfgasResult.drop('Unnamed: 0.1', axis=1)
     
     dfgasResult=dfgasResult.reset_index()
+    dfgasResultJSON  = dfgasResult
+
     dfgasResult = pd.melt(dfgasResult, id_vars=["Date","Type"], value_vars=list(dfgasResult.columns[1:]))
     dfgasResult["Date_Time"] = dfgasResult["Date"].astype("string") + " " + dfgasResult["variable"]
     dfgasResult=dfgasResult.drop(["variable","Date"],axis=1)
     dfgasResult=dfgasResult.set_index(['Date_Time'])
     dfgasResult=dfgasResult.sort_index()
-    dfgasResult['value'] = dfgasResult['value'].astype('int')    
-    
+    dfgasResult['value'] = dfgasResult['value'].astype('int')
+    print(dfgasResult.empty)
     dfgasResultHTML = dfgasResult.to_html()
+    
     if dfgasResult.empty == False:
-        dfgasResult['Type'] = dfgasResult['Type'].str.strip()
-        dfgasResult = dfgasResult.to_json(orient="index",indent=1)
+
+
+#         # dfgasResultJSON  = dfgasResultJSON .loc[:,'Date':'HE24']
+#         # result = {row['Date']: row.loc['HE01':'HE24'].to_dict() for _, row in dfgasResultJSON.iterrows()}
+#         # data = {'type': dfgasResultJSON.loc[0,'Type'].strip(),'dates':result}
+
+
         container_clientgas = blob_service_client.get_container_client("gasevents")
         blob_client = container_clientgas.get_blob_client(eventName)
         container_clientgas= blob_client.upload_blob(dfgasResult,overwrite = True)
         
-        container_clientCOAL1 = blob_service_client1.get_container_client("sevenday")
-        blob_client1= container_clientCOAL1.get_blob_client(eventName)
-        container_clientCOAL1= blob_client1.upload_blob(dfgasResult,overwrite=True)
+#         # container_clientCOAL1 = blob_service_client1.get_container_client("sevenday")
+#         # blob_client1= container_clientCOAL1.get_blob_client(eventName)
+#         # container_clientCOAL1= blob_client1.upload_blob(data,overwrite=True)
         
         container_clientHTML = blob_service_client.get_container_client("sevenhtml")
         blob_client = container_clientHTML.get_blob_client(eventNameHTML)
@@ -204,9 +221,12 @@ async def main(mytimer: func.TimerRequest):
         
     dfgasResulta = dfgasMaster - dfgas
     dfgasResulta = dfgasResulta.loc[dfgasResulta[dfgasResulta <= -100].any(axis=1)]
-    dfgasResulta = dfgasResulta.drop('Unnamed: 0.1', axis=1)
+    #dfgasResulta = dfgasResulta.drop('Unnamed: 0.1', axis=1)
     
     dfgasResulta=dfgasResulta.reset_index()
+    dfgasResultaJSON = dfgasResulta
+    
+    
     dfgasResulta = pd.melt(dfgasResulta, id_vars=["Date","Type"], value_vars=list(dfgasResulta.columns[1:]))
     dfgasResulta["Date_Time"] = dfgasResulta["Date"].astype("string") + " " + dfgasResulta["variable"]
     dfgasResulta=dfgasResulta.drop(["variable","Date"],axis=1)
@@ -215,15 +235,18 @@ async def main(mytimer: func.TimerRequest):
     dfgasResulta['value'] = dfgasResulta['value'].astype('int')   
     dfgasResultHTMLa = dfgasResulta.to_html()
     if dfgasResulta.empty == False:
-        dfgasResulta['Type'] = dfgasResulta['Type'].str.strip()
-        dfgasResulta = dfgasResulta.to_json(orient="index",indent=1)        
+        # dfgasResultaJSON = dfgasResultaJSON.loc[:,'Date':'HE24']
+        # result = {row['Date']: row.loc['HE01':'HE24'].to_dict() for _, row in dfgasResultaJSON.iterrows()}
+        # data = {'type': dfgasResultaJSON.loc[0,'Type'].strip(),'dates':result}
+
+      
         container_clientgas = blob_service_client.get_container_client("gasevents")
         blob_client = container_clientgas.get_blob_client(eventNameb)
         container_clientgas= blob_client.upload_blob(dfgasResulta,overwrite = True)
         
-        container_clientCOAL1 = blob_service_client1.get_container_client("sevenday")
-        blob_client1= container_clientCOAL1.get_blob_client(eventName)
-        container_clientCOAL1= blob_client1.upload_blob(dfgasResulta,overwrite=True)
+        # container_clientCOAL1 = blob_service_client1.get_container_client("sevenday")
+        # blob_client1= container_clientCOAL1.get_blob_client(eventName)
+        # container_clientCOAL1= blob_client1.upload_blob(data,overwrite=True)
     
         container_clientHTML = blob_service_client.get_container_client("sevenhtml")
         blob_client = container_clientHTML.get_blob_client(eventNameHTMLb)
@@ -235,7 +258,7 @@ async def main(mytimer: func.TimerRequest):
 
 
 
-#####################################################################################
+# #####################################################################################
  
     blob_client = container_clientDual.get_blob_client('dual.csv')
     dfdual = blob_client.download_blob()
@@ -266,6 +289,8 @@ async def main(mytimer: func.TimerRequest):
     dfdualResult = dfdualResult.drop('Unnamed: 0.1', axis=1)
     
     dfdualResult=dfdualResult.reset_index()
+
+    dfdualResultJSON = dfdualResult
     dfdualResult = pd.melt(dfdualResult, id_vars=["Date","Type"], value_vars=list(dfdualResult.columns[1:]))
     dfdualResult["Date_Time"] = dfdualResult["Date"].astype("string") + " " + dfdualResult["variable"]
     dfdualResult=dfdualResult.drop(["variable","Date"],axis=1)
@@ -276,15 +301,19 @@ async def main(mytimer: func.TimerRequest):
     dfdualResultHTML = dfdualResult.to_html()
     
     if dfdualResult.empty == False:
-        dfdualResult['Type'] = dfdualResult['Type'].str.strip()
-        dfdualResult = dfdualResult.to_json(orient="index",indent=1) 
+
+
+        # dfdualResultJSON = dfdualResultJSON.loc[:,'Date':'HE24']
+        # result = {row['Date']: row.loc['HE01':'HE24'].to_dict() for _, row in dfdualResultJSON.iterrows()}
+        # data = {'type': dfdualResultJSON.loc[0,'Type'].strip(),'dates':result}
+
         container_clientdual = blob_service_client.get_container_client("dualevents")
         blob_client = container_clientdual.get_blob_client(eventName)
         container_clientdual= blob_client.upload_blob(dfdualResult,overwrite = True)
         
-        container_clientCOAL1 = blob_service_client1.get_container_client("sevenday")
-        blob_client1= container_clientCOAL1.get_blob_client(eventName)
-        container_clientCOAL1= blob_client1.upload_blob(dfdualResult,overwrite=True)
+        # container_clientCOAL1 = blob_service_client1.get_container_client("sevenday")
+        # blob_client1= container_clientCOAL1.get_blob_client(eventName)
+        # container_clientCOAL1= blob_client1.upload_blob(dfdualResult,overwrite=True)
         
         container_clientHTML = blob_service_client.get_container_client("sevenhtml")
         blob_client = container_clientHTML.get_blob_client(eventNameHTML)
@@ -295,6 +324,11 @@ async def main(mytimer: func.TimerRequest):
     dfdualResulta = dfdualResulta.drop('Unnamed: 0.1', axis=1)
     
     dfdualResulta=dfdualResulta.reset_index()
+    
+    
+    
+    dfdualResultaJSON = dfdualResulta
+    
     dfdualResulta = pd.melt(dfdualResulta, id_vars=["Date","Type"], value_vars=list(dfdualResulta.columns[1:]))
     dfdualResulta["Date_Time"] = dfdualResulta["Date"].astype("string") + " " + dfdualResulta["variable"]
     dfdualResulta=dfdualResulta.drop(["variable","Date"],axis=1)
@@ -303,15 +337,19 @@ async def main(mytimer: func.TimerRequest):
     dfdualResulta['value'] = dfdualResulta['value'].astype('int')    
     dfdualResultaHTML = dfdualResulta.to_html()
     if dfdualResulta.empty == False:
-        dfdualResulta['Type'] = dfdualResulta['Type'].str.strip()
-        dfdualResulta = dfdualResulta.to_json(orient="index",indent=1)
+
+
+        # dfdualResultaJSON = dfdualResultaJSON.loc[:,'Date':'HE24']
+        # result = {row['Date']: row.loc['HE01':'HE24'].to_dict() for _, row in dfdualResultaJSON.iterrows()}
+        # data = {'type': dfdualResultaJSON.loc[0,'Type'].strip(),'dates':result}
+
         container_clientdual = blob_service_client.get_container_client("dualevents")
         blob_client = container_clientdual.get_blob_client(eventNameb)
         container_clientdual= blob_client.upload_blob(dfdualResulta,overwrite = True)
         
-        container_clientCOAL1 = blob_service_client1.get_container_client("sevenday")
-        blob_client1= container_clientCOAL1.get_blob_client(eventName)
-        container_clientCOAL1= blob_client1.upload_blob(dfdualResulta,overwrite=True)
+        # container_clientCOAL1 = blob_service_client1.get_container_client("sevenday")
+        # blob_client1= container_clientCOAL1.get_blob_client(eventName)
+        # container_clientCOAL1= blob_client1.upload_blob(data,overwrite=True)
     
         container_clientHTML = blob_service_client.get_container_client("sevenhtml")
         blob_client = container_clientHTML.get_blob_client(eventNameHTMLb)
@@ -321,7 +359,7 @@ async def main(mytimer: func.TimerRequest):
     blob_client = container_clientdual.get_blob_client("dualMaster.csv")
     container_clientdual= blob_client.upload_blob(dfdualstagnant,overwrite=True)
 
-############################################################################
+# ############################################################################
      
 
 
@@ -356,6 +394,8 @@ async def main(mytimer: func.TimerRequest):
     dfhydroResult = dfhydroResult.drop('Unnamed: 0.1', axis=1)
     
     dfhydroResult=dfhydroResult.reset_index()
+    dfhydroResultJSON = dfhydroResult
+
     dfhydroResult = pd.melt(dfhydroResult, id_vars=["Date","Type"], value_vars=list(dfhydroResult.columns[1:]))
     dfhydroResult["Date_Time"] = dfhydroResult["Date"].astype("string") + " " + dfhydroResult["variable"]
     dfhydroResult=dfhydroResult.drop(["variable","Date"],axis=1)
@@ -367,15 +407,19 @@ async def main(mytimer: func.TimerRequest):
     dfhydroResultHTML = dfhydroResult.to_html()
     
     if dfhydroResult.empty == False:
-        dfhydroResult['Type'] = dfhydroResult['Type'].str.strip()
-        dfhydroResult = dfhydroResult.to_json(orient="index",indent=1)
+
+        # dfhydroResultJSON = dfhydroResultJSON.loc[:,'Date':'HE24']
+        # result = {row['Date']: row.loc['HE01':'HE24'].to_dict() for _, row in dfhydroResultJSON.iterrows()}
+        # data = {'type': dfhydroResultJSON.loc[0,'Type'].strip(),'dates':result}
+
+
         container_clienthydro = blob_service_client.get_container_client("hydroevents")
         blob_client = container_clienthydro.get_blob_client(eventName)
         container_clienthydro= blob_client.upload_blob(dfhydroResult,overwrite = True)
         
-        container_clientCOAL1 = blob_service_client1.get_container_client("sevenday")
-        blob_client1= container_clientCOAL1.get_blob_client(eventName)
-        container_clientCOAL1= blob_client1.upload_blob(dfhydroResult,overwrite=True)
+        # container_clientCOAL1 = blob_service_client1.get_container_client("sevenday")
+        # blob_client1= container_clientCOAL1.get_blob_client(eventName)
+        # container_clientCOAL1= blob_client1.upload_blob(data,overwrite=True)
         
         container_clientHTML = blob_service_client.get_container_client("sevenhtml")
         blob_client = container_clientHTML.get_blob_client(eventNameHTML)
@@ -386,6 +430,8 @@ async def main(mytimer: func.TimerRequest):
     dfhydroResulta = dfhydroResulta.drop('Unnamed: 0.1', axis=1)
     
     dfhydroResulta=dfhydroResulta.reset_index()
+    dfhydroResultaJSON = dfhydroResulta
+    
     dfhydroResulta = pd.melt(dfhydroResulta, id_vars=["Date","Type"], value_vars=list(dfhydroResulta.columns[1:]))
     dfhydroResulta["Date_Time"] = dfhydroResulta["Date"].astype("string") + " " + dfhydroResulta["variable"]
     dfhydroResulta=dfhydroResulta.drop(["variable","Date"],axis=1)
@@ -396,15 +442,20 @@ async def main(mytimer: func.TimerRequest):
     
     dfhydroResultaHTML = dfhydroResulta.to_html()
     if dfhydroResulta.empty == False:
-        dfhydroResulta['Type'] = dfhydroResulta['Type'].str.strip()
-        dfhydroResulta = dfhydroResulta.to_json(orient="index",indent=1)
+
+        # dfhydroResultaJSON = dfhydroResultaJSON.loc[:,'Date':'HE24']
+        # result = {row['Date']: row.loc['HE01':'HE24'].to_dict() for _, row in dfhydroResultaJSON.iterrows()}
+        # data = {'type': dfhydroResultaJSON.loc[0,'Type'].strip(),'dates':result}
+
+
+
         container_clienthydro = blob_service_client.get_container_client("hydroevents")
         blob_client = container_clienthydro.get_blob_client(eventNameb)
         container_clienthydro= blob_client.upload_blob(dfhydroResulta,overwrite = True)
         
-        container_clientCOAL1 = blob_service_client1.get_container_client("sevenday")
-        blob_client1= container_clientCOAL1.get_blob_client(eventName)
-        container_clientCOAL1= blob_client1.upload_blob(dfhydroResulta,overwrite=True)
+        # container_clientCOAL1 = blob_service_client1.get_container_client("sevenday")
+        # blob_client1= container_clientCOAL1.get_blob_client(eventName)
+        # container_clientCOAL1= blob_client1.upload_blob(data,overwrite=True)
         
         container_clientHTML = blob_service_client.get_container_client("sevenhtml")
         blob_client = container_clientHTML.get_blob_client(eventNameHTMLb)
@@ -450,6 +501,8 @@ async def main(mytimer: func.TimerRequest):
     dfotherResult = dfotherResult.drop('Unnamed: 0.1', axis=1)
     
     dfotherResult=dfotherResult.reset_index()
+    dfotherResultJSON = dfotherResult
+
     dfotherResult = pd.melt(dfotherResult, id_vars=["Date","Type"], value_vars=list(dfotherResult.columns[1:]))
     dfotherResult["Date_Time"] = dfotherResult["Date"].astype("string") + " " + dfotherResult["variable"]
     dfotherResult=dfotherResult.drop(["variable","Date"],axis=1)
@@ -462,15 +515,19 @@ async def main(mytimer: func.TimerRequest):
     
     dfotherResultHTML = dfotherResult.to_html()
     if dfotherResult.empty == False:
-        dfotherResult['Type'] = dfotherResult['Type'].str.strip()
-        dfotherResult = dfotherResult.to_json(orient="index",indent=1)
+
+
+        # dfotherResultJSON = dfotherResultJSON.loc[:,'Date':'HE24']
+        # result = {row['Date']: row.loc['HE01':'HE24'].to_dict() for _, row in dfotherResultJSON.iterrows()}
+        # data = {'type': dfotherResultJSON.loc[0,'Type'].strip(),'dates':result}
+
         container_clientother = blob_service_client.get_container_client("otherevents")
         blob_client = container_clientother.get_blob_client(eventName)
         container_clientother= blob_client.upload_blob(dfotherResult,overwrite = True)
         
-        container_clientCOAL1 = blob_service_client1.get_container_client("sevenday")
-        blob_client1= container_clientCOAL1.get_blob_client(eventName)
-        container_clientCOAL1= blob_client1.upload_blob(dfotherResult,overwrite=True)
+        # container_clientCOAL1 = blob_service_client1.get_container_client("sevenday")
+        # blob_client1= container_clientCOAL1.get_blob_client(eventName)
+        # container_clientCOAL1= blob_client1.upload_blob(data,overwrite=True)
         
         container_clientHTML = blob_service_client.get_container_client("sevenhtml")
         blob_client = container_clientHTML.get_blob_client(eventNameHTML)
@@ -481,35 +538,42 @@ async def main(mytimer: func.TimerRequest):
     dfotherResulta = dfotherResulta.drop('Unnamed: 0.1', axis=1)
     
     dfotherResulta=dfotherResulta.reset_index()
+    dfotherResultaJSON = dfotherResulta
+    
+    
     dfotherResulta = pd.melt(dfotherResulta, id_vars=["Date","Type"], value_vars=list(dfotherResulta.columns[1:]))
     dfotherResulta["Date_Time"] = dfotherResulta["Date"].astype("string") + " " + dfotherResulta["variable"]
     dfotherResulta=dfotherResulta.drop(["variable","Date"],axis=1)
     dfotherResulta=dfotherResulta.set_index(['Date_Time'])
     dfotherResulta=dfotherResulta.sort_index()
     dfotherResulta['value'] = dfotherResulta['value'].astype('int')     
-    dfgasResultHTMLb = dfgasResulta.to_html()
+    dfotherResultaHTML = dfotherResulta.to_html()
     if dfotherResulta.empty == False:
         
-        dfotherResulta['Type'] = dfotherResulta['Type'].str.strip()
-        dfotherResulta = dfotherResulta.to_json(orient="index",indent=1)
+        # dfotherResultaJSON = dfotherResultaJSON.loc[:,'Date':'HE24']
+        # result = {row['Date']: row.loc['HE01':'HE24'].to_dict() for _, row in dfotherResultaJSON.iterrows()}
+        # data = {'type': dfotherResultaJSON.loc[0,'Type'].strip(),'dates':result}
+
+
+
         container_clientother = blob_service_client.get_container_client("otherevents")
         blob_client = container_clientother.get_blob_client(eventNameb)
         container_clientother= blob_client.upload_blob(dfotherResulta,overwrite = True)
         
-        container_clientCOAL1 = blob_service_client1.get_container_client("sevenday")
-        blob_client1= container_clientCOAL1.get_blob_client(eventName)
-        container_clientCOAL1= blob_client1.upload_blob(dfotherResulta,overwrite=True)
+        # container_clientCOAL1 = blob_service_client1.get_container_client("sevenday")
+        # blob_client1= container_clientCOAL1.get_blob_client(eventName)
+        # container_clientCOAL1= blob_client1.upload_blob(data,overwrite=True)
 
         container_clientHTML = blob_service_client.get_container_client("sevenhtml")
         blob_client = container_clientHTML.get_blob_client(eventNameHTMLb)
-        container_clientHTML= blob_client.upload_blob(dfgasResultHTMLb,overwrite=True) 
+        container_clientHTML= blob_client.upload_blob(dfotherResultaHTML,overwrite=True) 
     
     container_clientother = blob_service_client.get_container_client("masterother")
     blob_client = container_clientother.get_blob_client("otherMaster.csv")
     container_clientother= blob_client.upload_blob(dfotherstagnant,overwrite=True)
 
 
-    ###############################################################################################
+#     ###############################################################################################
     
 
 
@@ -546,6 +610,8 @@ async def main(mytimer: func.TimerRequest):
     dfstorageResult = dfstorageResult.drop('Unnamed: 0.1', axis=1)
     
     dfstorageResult=dfstorageResult.reset_index()
+    dfstorageResultJSON = dfstorageResult
+    
     dfstorageResult = pd.melt(dfstorageResult, id_vars=["Date","Type"], value_vars=list(dfstorageResult.columns[1:]))
     dfstorageResult["Date_Time"] = dfstorageResult["Date"].astype("string") + " " + dfstorageResult["variable"]
     dfstorageResult=dfstorageResult.drop(["variable","Date"],axis=1)
@@ -554,16 +620,17 @@ async def main(mytimer: func.TimerRequest):
     dfstorageResult['value'] = dfstorageResult['value'].astype('int') 
     dfstorageResultHTML = dfstorageResult.to_html()
     if dfstorageResult.empty == False:
-        
-        dfstorageResult['Type'] = dfstorageResult['Type'].str.strip()
-        dfstorageResult = dfstorageResult.to_json(orient="index",indent=1)
+        # dfstorageResultJSON = dfstorageResultJSON.loc[:,'Date':'HE24']
+        # result = {row['Date']: row.loc['HE01':'HE24'].to_dict() for _, row in dfstorageResultJSON.iterrows()}
+        # data = {'type': dfstorageResultJSON.loc[0,'Type'].strip(),'dates':result}
+
         container_clientstorage = blob_service_client.get_container_client("storageevents")
         blob_client = container_clientstorage.get_blob_client(eventName)
         container_clientstorage= blob_client.upload_blob(dfstorageResult,overwrite = True)
         
-        container_clientCOAL1 = blob_service_client1.get_container_client("sevenday")
-        blob_client1= container_clientCOAL1.get_blob_client(eventName)
-        container_clientCOAL1= blob_client1.upload_blob(dfstorageResult,overwrite=True)
+        # container_clientCOAL1 = blob_service_client1.get_container_client("sevenday")
+        # blob_client1= container_clientCOAL1.get_blob_client(eventName)
+        # container_clientCOAL1= blob_client1.upload_blob(data,overwrite=True)
         
         container_clientHTML = blob_service_client.get_container_client("sevenhtml")
         blob_client = container_clientHTML.get_blob_client(eventNameHTML)
@@ -573,6 +640,10 @@ async def main(mytimer: func.TimerRequest):
     dfstorageResulta = dfstorageResulta.loc[dfstorageResulta[dfstorageResulta <= -100].any(axis=1)]
     dfstorageResulta = dfstorageResulta.drop('Unnamed: 0.1', axis=1)
     dfstorageResulta=dfstorageResulta.reset_index()
+    
+    
+    dfstorageResultaJSON = dfstorageResulta
+    
     dfstorageResulta = pd.melt(dfstorageResulta, id_vars=["Date","Type"], value_vars=list(dfstorageResulta.columns[1:]))
     dfstorageResulta["Date_Time"] = dfstorageResulta["Date"].astype("string") + " " + dfstorageResulta["variable"]
     dfstorageResulta=dfstorageResulta.drop(["variable","Date"],axis=1)
@@ -582,15 +653,19 @@ async def main(mytimer: func.TimerRequest):
     dfstorageResulta['value'] = dfstorageResulta['value'].astype('int')     
     dfstorageResultaHTML = dfstorageResulta.to_html()
     if dfstorageResulta.empty == False:
-        dfstorageResulta['Type'] = dfstorageResulta['Type'].str.strip()
-        dfstorageResulta = dfstorageResulta.to_json(orient="index",indent=1)
+
+        # dfstorageResultaJSON = dfstorageResultaJSON.loc[:,'Date':'HE24']
+        # result = {row['Date']: row.loc['HE01':'HE24'].to_dict() for _, row in dfstorageResultaJSON.iterrows()}
+        # data = {'type': dfstorageResultaJSON.loc[0,'Type'].strip(),'dates':result}
+
+
         container_clientstorage = blob_service_client.get_container_client("storageevents")
         blob_client = container_clientstorage.get_blob_client(eventNameb)
         container_clientstorage= blob_client.upload_blob(dfstorageResulta,overwrite = True)
         
-        container_clientCOAL1 = blob_service_client1.get_container_client("sevenday")
-        blob_client1= container_clientCOAL1.get_blob_client(eventName)
-        container_clientCOAL1= blob_client1.upload_blob(dfstorageResulta,overwrite=True)
+        # container_clientCOAL1 = blob_service_client1.get_container_client("sevenday")
+        # blob_client1= container_clientCOAL1.get_blob_client(eventName)
+        # container_clientCOAL1= blob_client1.upload_blob(data,overwrite=True)
         
         container_clientHTML = blob_service_client.get_container_client("sevenhtml")
         blob_client = container_clientHTML.get_blob_client(eventNameHTMLb)
@@ -605,187 +680,206 @@ async def main(mytimer: func.TimerRequest):
 
 
  
-    blob_client = container_clientSolar.get_blob_client('solar.csv')
-    dfsolar = blob_client.download_blob()
-    dfsolar = pd.read_csv(dfsolar)
+#     blob_client = container_clientSolar.get_blob_client('solar.csv')
+#     dfsolar = blob_client.download_blob()
+#     dfsolar = pd.read_csv(dfsolar)
 
-    dfsolarstagnant = dfsolar.to_csv()
-    dfsolar["Date"] = pd.to_datetime(dfsolar["Date"])
-    dfsolar['Type'] = dfsolar['Type'].astype('string')
-    dfsolar = dfsolar.set_index(['Date','Type'])
-    dfsolar = dfsolar.drop(['Unnamed: 0'],axis=1)
-    dfsolar = dfsolar.drop(['MC'],axis=1)
-
-
-
-
-    blob_client = container_clientSolarMaster.get_blob_client('solarMaster.csv')
-    dfsolarMaster = blob_client.download_blob()
-    dfsolarMaster = pd.read_csv(dfsolarMaster)
-
-
-    dfsolarMaster["Date"] = pd.to_datetime(dfsolarMaster["Date"])
-    dfsolarMaster['Type'] = dfsolarMaster['Type'].astype('string')
-    dfsolarMaster = dfsolarMaster.set_index(['Date','Type'])
-    dfsolarMaster = dfsolarMaster.drop(['Unnamed: 0'],axis=1)
-    dfsolarMaster = dfsolarMaster.drop(['MC'],axis=1)
+#     dfsolarstagnant = dfsolar.to_csv()
+#     dfsolar["Date"] = pd.to_datetime(dfsolar["Date"])
+#     dfsolar['Type'] = dfsolar['Type'].astype('string')
+#     dfsolar = dfsolar.set_index(['Date','Type'])
+#     dfsolar = dfsolar.drop(['Unnamed: 0'],axis=1)
+#     dfsolar = dfsolar.drop(['MC'],axis=1)
 
 
 
-    dfsolarResult = dfsolarMaster - dfsolar
-    dfsolarResult = dfsolarResult.loc[dfsolarResult[dfsolarResult >= 100].any(axis=1)]
-    dfsolarResult = dfsolarResult.drop('Unnamed: 0.1', axis=1)
+
+#     blob_client = container_clientSolarMaster.get_blob_client('solarMaster.csv')
+#     dfsolarMaster = blob_client.download_blob()
+#     dfsolarMaster = pd.read_csv(dfsolarMaster)
+
+
+#     dfsolarMaster["Date"] = pd.to_datetime(dfsolarMaster["Date"])
+#     dfsolarMaster['Type'] = dfsolarMaster['Type'].astype('string')
+#     dfsolarMaster = dfsolarMaster.set_index(['Date','Type'])
+#     dfsolarMaster = dfsolarMaster.drop(['Unnamed: 0'],axis=1)
+#     dfsolarMaster = dfsolarMaster.drop(['MC'],axis=1)
+
+
+
+#     dfsolarResult = dfsolarMaster - dfsolar
+#     dfsolarResult = dfsolarResult.loc[dfsolarResult[dfsolarResult >= 100].any(axis=1)]
+#     dfsolarResult = dfsolarResult.drop('Unnamed: 0.1', axis=1)
     
-    dfsolarResult=dfsolarResult.reset_index()
-    dfsolarResult = pd.melt(dfsolarResult, id_vars=["Date","Type"], value_vars=list(dfsolarResult.columns[1:]))
-    dfsolarResult["Date_Time"] = dfsolarResult["Date"].astype("string") + " " + dfsolarResult["variable"]
-    dfsolarResult=dfsolarResult.drop(["variable","Date"],axis=1)
-    dfsolarResult=dfsolarResult.set_index(['Date_Time'])
-    dfsolarResult=dfsolarResult.sort_index()
+#     dfsolarResult=dfsolarResult.reset_index()
+#     dfsolarResultJSON = dfsolarResult
+#     dfsolarResult = pd.melt(dfsolarResult, id_vars=["Date","Type"], value_vars=list(dfsolarResult.columns[1:]))
+#     dfsolarResult["Date_Time"] = dfsolarResult["Date"].astype("string") + " " + dfsolarResult["variable"]
+#     dfsolarResult=dfsolarResult.drop(["variable","Date"],axis=1)
+#     dfsolarResult=dfsolarResult.set_index(['Date_Time'])
+#     dfsolarResult=dfsolarResult.sort_index()
     
-    dfsolarResult['value'] = dfsolarResult['value'].astype('int')      
-    dfsolarResultHTML = dfsolarResult.to_html()
-    if dfsolarResult.empty == False:
-        dfsolarResult['Type'] = dfsolarResult['Type'].str.strip()
-        dfsolarResult = dfsolarResult.to_json(orient="index",indent=1)
-        container_clientsolar = blob_service_client.get_container_client("solarevents")
-        blob_client = container_clientsolar.get_blob_client(eventName)
-        container_clientsolar= blob_client.upload_blob(dfsolarResult,overwrite = True)
+#     dfsolarResult['value'] = dfsolarResult['value'].astype('int')      
+#     dfsolarResultHTML = dfsolarResult.to_html()
+#     if dfsolarResult.empty == False:
+
+#         # dfsolarResultJSON = dfsolarResultJSON.loc[:,'Date':'HE24']
+#         # result = {row['Date']: row.loc['HE01':'HE24'].to_dict() for _, row in dfsolarResultJSON.iterrows()}
+#         # data = {'type': dfsolarResultJSON.loc[0,'Type'].strip(),'dates':result}
+
+#         container_clientsolar = blob_service_client.get_container_client("solarevents")
+#         blob_client = container_clientsolar.get_blob_client(eventName)
+#         container_clientsolar= blob_client.upload_blob(dfsolarResult,overwrite = True)
         
-        container_clientCOAL1 = blob_service_client1.get_container_client("sevenday")
-        blob_client1= container_clientCOAL1.get_blob_client(eventName)
-        container_clientCOAL1= blob_client1.upload_blob(dfsolarResult,overwrite=True)    
+#         # container_clientCOAL1 = blob_service_client1.get_container_client("sevenday")
+#         # blob_client1= container_clientCOAL1.get_blob_client(eventName)
+#         # container_clientCOAL1= blob_client1.upload_blob(data,overwrite=True)    
         
-        container_clientHTML = blob_service_client.get_container_client("sevenhtml")
-        blob_client = container_clientHTML.get_blob_client(eventNameHTML)
-        container_clientHTML= blob_client.upload_blob(dfsolarResultHTML,overwrite=True)
+#         container_clientHTML = blob_service_client.get_container_client("sevenhtml")
+#         blob_client = container_clientHTML.get_blob_client(eventNameHTML)
+#         container_clientHTML= blob_client.upload_blob(dfsolarResultHTML,overwrite=True)
     
-    dfsolarResulta = dfsolarMaster - dfsolar
-    dfsolarResulta = dfsolarResulta.loc[dfsolarResulta[dfsolarResulta <= -100].any(axis=1)]
-    dfsolarResulta = dfsolarResulta.drop('Unnamed: 0.1', axis=1)
+#     dfsolarResulta = dfsolarMaster - dfsolar
+#     dfsolarResulta = dfsolarResulta.loc[dfsolarResulta[dfsolarResulta <= -100].any(axis=1)]
+#     dfsolarResulta = dfsolarResulta.drop('Unnamed: 0.1', axis=1)
     
-    dfsolarResulta=dfsolarResulta.reset_index()
-    dfsolarResulta = pd.melt(dfsolarResulta, id_vars=["Date","Type"], value_vars=list(dfsolarResulta.columns[1:]))
-    dfsolarResulta["Date_Time"] = dfsolarResulta["Date"].astype("string") + " " + dfsolarResulta["variable"]
-    dfsolarResulta=dfsolarResulta.drop(["variable","Date"],axis=1)
-    dfsolarResulta=dfsolarResulta.set_index(['Date_Time'])
-    dfsolarResulta=dfsolarResulta.sort_index()
+#     dfsolarResulta=dfsolarResulta.reset_index()
     
-    dfsolarResulta['value'] = dfsolarResulta['value'].astype('int')     
-    dfsolarResultHTMLb = dfsolarResulta.to_html()
-    if dfsolarResulta.empty == False:
-        dfsolarResulta['Type'] = dfsolarResulta['Type'].str.strip()
-        dfsolarResulta = dfsolarResulta.to_json(orient="index",indent=1)
-        container_clientsolar = blob_service_client.get_container_client("solarevents")
-        blob_client = container_clientsolar.get_blob_client(eventNameb)
-        container_clientsolar= blob_client.upload_blob(dfsolarResulta,overwrite = True)
+#     dfsolarResultaJSON = dfsolarResulta
+#     dfsolarResulta = pd.melt(dfsolarResulta, id_vars=["Date","Type"], value_vars=list(dfsolarResulta.columns[1:]))
+#     dfsolarResulta["Date_Time"] = dfsolarResulta["Date"].astype("string") + " " + dfsolarResulta["variable"]
+#     dfsolarResulta=dfsolarResulta.drop(["variable","Date"],axis=1)
+#     dfsolarResulta=dfsolarResulta.set_index(['Date_Time'])
+#     dfsolarResulta=dfsolarResulta.sort_index()
+    
+#     dfsolarResulta['value'] = dfsolarResulta['value'].astype('int')     
+#     dfsolarResultHTMLb = dfsolarResulta.to_html()
+#     if dfsolarResulta.empty == False:
+#         # dfsolarResultaJSON = dfsolarResultaJSON.loc[:,'Date':'HE24']
+#         # result = {row['Date']: row.loc['HE01':'HE24'].to_dict() for _, row in dfsolarResultaJSON.iterrows()}
+#         # data = {'type': dfsolarResultaJSON.loc[0,'Type'].strip(),'dates':result}
+
+#         container_clientsolar = blob_service_client.get_container_client("solarevents")
+#         blob_client = container_clientsolar.get_blob_client(eventNameb)
+#         container_clientsolar= blob_client.upload_blob(dfsolarResulta,overwrite = True)
         
-        container_clientCOAL1 = blob_service_client1.get_container_client("sevenday")
-        blob_client1= container_clientCOAL1.get_blob_client(eventName)
-        container_clientCOAL1= blob_client1.upload_blob(dfsolarResulta,overwrite=True)   
+#         # container_clientCOAL1 = blob_service_client1.get_container_client("sevenday")
+#         # blob_client1= container_clientCOAL1.get_blob_client(eventName)
+#         # container_clientCOAL1= blob_client1.upload_blob(data,overwrite=True)   
         
-        container_clientHTML = blob_service_client.get_container_client("sevenhtml")
-        blob_client = container_clientHTML.get_blob_client(eventNameHTMLb)
-        container_clientHTML= blob_client.upload_blob(dfsolarResultHTMLb,overwrite=True)
+#         container_clientHTML = blob_service_client.get_container_client("sevenhtml")
+#         blob_client = container_clientHTML.get_blob_client(eventNameHTMLb)
+#         container_clientHTML= blob_client.upload_blob(dfsolarResultHTMLb,overwrite=True)
     
-    container_clientsolar = blob_service_client.get_container_client("mastersolar")
-    blob_client = container_clientsolar.get_blob_client("solarMaster.csv")
-    container_clientsolar= blob_client.upload_blob(dfsolarstagnant,overwrite=True)
+#     container_clientsolar = blob_service_client.get_container_client("mastersolar")
+#     blob_client = container_clientsolar.get_blob_client("solarMaster.csv")
+#     container_clientsolar= blob_client.upload_blob(dfsolarstagnant,overwrite=True)
 
 
-    ##############################################################################################
+# #     ##############################################################################################
     
 
 
  
-    blob_client = container_clientWind.get_blob_client('wind.csv')
-    dfwind = blob_client.download_blob()
-    dfwind = pd.read_csv(dfwind)
+#     blob_client = container_clientWind.get_blob_client('wind.csv')
+#     dfwind = blob_client.download_blob()
+#     dfwind = pd.read_csv(dfwind)
 
-    dfwindstagnant = dfwind.to_csv()
-    dfwind["Date"] = pd.to_datetime(dfwind["Date"])
-    dfwind['Type'] = dfwind['Type'].astype('string')
-    dfwind = dfwind.set_index(['Date','Type'])
-    dfwind = dfwind.drop(['Unnamed: 0'],axis=1)
-    dfwind = dfwind.drop(['MC'],axis=1)
-
-
-
-
-    blob_client = container_clientWindMaster.get_blob_client('windMaster.csv')
-    dfwindMaster = blob_client.download_blob()
-    dfwindMaster = pd.read_csv(dfwindMaster)
-
-
-    dfwindMaster["Date"] = pd.to_datetime(dfwindMaster["Date"])
-    dfwindMaster['Type'] = dfwindMaster['Type'].astype('string')
-    dfwindMaster = dfwindMaster.set_index(['Date','Type'])
-    dfwindMaster = dfwindMaster.drop(['Unnamed: 0'],axis=1)
-    dfwindMaster = dfwindMaster.drop(['MC'],axis=1)
+#     dfwindstagnant = dfwind.to_csv()
+#     dfwind["Date"] = pd.to_datetime(dfwind["Date"])
+#     dfwind['Type'] = dfwind['Type'].astype('string')
+#     dfwind = dfwind.set_index(['Date','Type'])
+#     dfwind = dfwind.drop(['Unnamed: 0'],axis=1)
+#     dfwind = dfwind.drop(['MC'],axis=1)
 
 
 
-    dfwindResult = dfwindMaster - dfwind
-    dfwindResult = dfwindResult.loc[dfwindResult[dfwindResult >= 100].any(axis=1)]
-    dfwindResult = dfwindResult.drop('Unnamed: 0.1', axis=1)
+
+#     blob_client = container_clientWindMaster.get_blob_client('windMaster.csv')
+#     dfwindMaster = blob_client.download_blob()
+#     dfwindMaster = pd.read_csv(dfwindMaster)
+
+
+#     dfwindMaster["Date"] = pd.to_datetime(dfwindMaster["Date"])
+#     dfwindMaster['Type'] = dfwindMaster['Type'].astype('string')
+#     dfwindMaster = dfwindMaster.set_index(['Date','Type'])
+#     dfwindMaster = dfwindMaster.drop(['Unnamed: 0'],axis=1)
+#     dfwindMaster = dfwindMaster.drop(['MC'],axis=1)
+
+
+
+#     dfwindResult = dfwindMaster - dfwind
+#     dfwindResult = dfwindResult.loc[dfwindResult[dfwindResult >= 100].any(axis=1)]
+#     dfwindResult = dfwindResult.drop('Unnamed: 0.1', axis=1)
     
-    dfwindResult=dfwindResult.reset_index()
-    dfwindResult = pd.melt(dfwindResult, id_vars=["Date","Type"], value_vars=list(dfwindResult.columns[1:]))
-    dfwindResult["Date_Time"] = dfwindResult["Date"].astype("string") + " " + dfwindResult["variable"]
-    dfwindResult=dfwindResult.drop(["variable","Date"],axis=1)
-    dfwindResult=dfwindResult.set_index(['Date_Time'])
-    dfwindResult=dfwindResult.sort_index()
+#     dfwindResult=dfwindResult.reset_index()
+#     dfwindResultJSON = dfwindResult
+    
+#     dfwindResult = pd.melt(dfwindResult, id_vars=["Date","Type"], value_vars=list(dfwindResult.columns[1:]))
+#     dfwindResult["Date_Time"] = dfwindResult["Date"].astype("string") + " " + dfwindResult["variable"]
+#     dfwindResult=dfwindResult.drop(["variable","Date"],axis=1)
+#     dfwindResult=dfwindResult.set_index(['Date_Time'])
+#     dfwindResult=dfwindResult.sort_index()
     
     
     
-    dfwindResult['value'] = dfwindResult['value'].astype('int')      
-    dfwindResultHTML = dfwindResult.to_html()
-    if dfwindResult.empty == False:
-        dfwindResult['Type'] = dfwindResult['Type'].str.strip()
-        dfwindResult = dfwindResult.to_json(orient="index",indent=1)
-        container_clientwind = blob_service_client.get_container_client("windevents")
-        blob_client = container_clientwind.get_blob_client(eventName)
-        container_clientwind= blob_client.upload_blob(dfwindResult,overwrite = True)
+#     dfwindResult['value'] = dfwindResult['value'].astype('int')      
+#     dfwindResultHTML = dfwindResult.to_html()
+#     if dfwindResult.empty == False:
+#         # dfwindResultJSON = dfwindResultJSON.loc[:,'Date':'HE24']
+#         # result = {row['Date']: row.loc['HE01':'HE24'].to_dict() for _, row in dfwindResultJSON.iterrows()}
+#         # data = {'type': dfwindResultJSON.loc[0,'Type'].strip(),'dates':result}
+        
+#         container_clientwind = blob_service_client.get_container_client("windevents")
+#         blob_client = container_clientwind.get_blob_client(eventName)
+#         container_clientwind= blob_client.upload_blob(dfwindResult,overwrite = True)
     
-        container_clientCOAL1 = blob_service_client1.get_container_client("sevenday")
-        blob_client1= container_clientCOAL1.get_blob_client(eventName)
-        container_clientCOAL1= blob_client1.upload_blob(dfwindResult,overwrite=True)   
+#         # container_clientCOAL1 = blob_service_client1.get_container_client("sevenday")
+#         # blob_client1= container_clientCOAL1.get_blob_client(eventName)
+#         # container_clientCOAL1= blob_client1.upload_blob(data,overwrite=True)   
             
-        container_clientHTML = blob_service_client.get_container_client("sevenhtml")
-        blob_client = container_clientHTML.get_blob_client(eventName)
-        container_clientHTML= blob_client.upload_blob(dfwindResultHTML,overwrite=True)
+#         container_clientHTML = blob_service_client.get_container_client("sevenhtml")
+#         blob_client = container_clientHTML.get_blob_client(eventName)
+#         container_clientHTML= blob_client.upload_blob(dfwindResultHTML,overwrite=True)
         
         
-    dfwindResulta = dfwindMaster - dfwind
-    dfwindResulta = dfwindResulta.loc[dfwindResulta[dfwindResulta <= -100].any(axis=1)]
-    dfwindResulta = dfwindResulta.drop('Unnamed: 0.1', axis=1)
+#     dfwindResulta = dfwindMaster - dfwind
+#     dfwindResulta = dfwindResulta.loc[dfwindResulta[dfwindResulta <= -100].any(axis=1)]
+#     dfwindResulta = dfwindResulta.drop('Unnamed: 0.1', axis=1)
     
-    dfwindResulta=dfwindResulta.reset_index()
-    dfwindResulta = pd.melt(dfwindResulta, id_vars=["Date","Type"], value_vars=list(dfwindResulta.columns[1:]))
-    dfwindResulta["Date_Time"] = dfwindResulta["Date"].astype("string") + " " + dfwindResulta["variable"]
-    dfwindResulta=dfwindResulta.drop(["variable","Date"],axis=1)
-    dfwindResulta=dfwindResulta.set_index(['Date_Time'])
-    dfwindResulta=dfwindResulta.sort_index()
+#     dfwindResulta=dfwindResulta.reset_index()
+    
+#     dfwindResultaJSON = dfwindResulta
+    
+#     dfwindResulta = pd.melt(dfwindResulta, id_vars=["Date","Type"], value_vars=list(dfwindResulta.columns[1:]))
+#     dfwindResulta["Date_Time"] = dfwindResulta["Date"].astype("string") + " " + dfwindResulta["variable"]
+#     dfwindResulta=dfwindResulta.drop(["variable","Date"],axis=1)
+#     dfwindResulta=dfwindResulta.set_index(['Date_Time'])
+#     dfwindResulta=dfwindResulta.sort_index()
     
     
-    dfwindResulta['value'] = dfwindResulta['value'].astype('int')      
-    dfwindResultHTMLa = dfwindResulta.to_html()
-    if dfwindResulta.empty == False:
-        dfwindResulta['Type'] = dfwindResulta['Type'].str.strip()
-        dfwindResulta = dfwindResulta.to_json(orient="index",indent=1)
-        container_clientwind = blob_service_client.get_container_client("windevents")
-        blob_client = container_clientwind.get_blob_client(eventName)
-        container_clientwind= blob_client.upload_blob(dfwindResulta,overwrite = True)
+#     dfwindResulta['value'] = dfwindResulta['value'].astype('int')      
+#     dfwindResultHTMLa = dfwindResulta.to_html()
+#     if dfwindResulta.empty == False:
+        
+
+#         dfwindResultaJSON = dfwindResulta
+#         # dfwindResultJSON = dfwindResultaJSON.loc[:,'Date':'HE24']
+#         # result = {row['Date']: row.loc['HE01':'HE24'].to_dict() for _, row in dfwindResultaJSON.iterrows()}
+#         # data = {'type': dfwindResultaJSON.loc[0,'Type'].strip(),'dates':result}
+#         container_clientwind = blob_service_client.get_container_client("windevents")
+#         blob_client = container_clientwind.get_blob_client(eventName)
+#         container_clientwind= blob_client.upload_blob(dfwindResulta,overwrite = True)
     
-        container_clientCOAL1 = blob_service_client1.get_container_client("sevenday")
-        blob_client1= container_clientCOAL1.get_blob_client(eventName)
-        container_clientCOAL1= blob_client1.upload_blob(dfwindResulta,overwrite=True)   
+#         # container_clientCOAL1 = blob_service_client1.get_container_client("sevenday")
+#         # blob_client1= container_clientCOAL1.get_blob_client(eventName)
+#         # container_clientCOAL1= blob_client1.upload_blob(data,overwrite=True)   
         
-        container_clientHTML = blob_service_client.get_container_client("sevenhtml")
-        blob_client = container_clientHTML.get_blob_client(eventName)
-        container_clientHTML= blob_client.upload_blob(dfwindResultHTMLa,overwrite=True)
+#         container_clientHTML = blob_service_client.get_container_client("sevenhtml")
+#         blob_client = container_clientHTML.get_blob_client(eventName)
+#         container_clientHTML= blob_client.upload_blob(dfwindResultHTMLa,overwrite=True)
         
         
-    container_clientwind = blob_service_client.get_container_client("masterwind")
-    blob_client = container_clientwind.get_blob_client("windMaster.csv")
-    container_clientwind= blob_client.upload_blob(dfwindstagnant,overwrite=True)
+#     container_clientwind = blob_service_client.get_container_client("masterwind")
+#     blob_client = container_clientwind.get_blob_client("windMaster.csv")
+#     container_clientwind= blob_client.upload_blob(dfwindstagnant,overwrite=True)

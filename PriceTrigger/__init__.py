@@ -56,16 +56,15 @@ def main(mytimer: func.TimerRequest) -> None:
     AILForecast = aeso_AILForecast(startDateDASHED,startDateDASHED)
     # AIL = AILForecast['forecast_pool_price']
     # AIL = AIL.dropna()
-    AILForecast = AILForecast.loc[AILForecast[AILForecast >= 30].any(axis=1)]
-    # AIL = AIL.loc[(AIL >= 10)]
-    # df = pd.DataFrame(AIL)
-    # AIL = df
+    AILForecast = AILForecast.loc[AILForecast[AILForecast >= 60].any(axis=1)]
+    AILForecast=AILForecast.drop(["pool_price","rolling_30day_avg"],axis=1)
     print(AILForecast)
     if AILForecast.empty == False:
         try:
             endDate = endDateHTML
             eventName = ".html"
             endDate = endDate + eventName
+            
             AIL = AILForecast.to_html()
             print(AIL)
             blob_service_client = BlobServiceClient.from_connection_string("DefaultEndpointsProtocol=https;AccountName=sevendaypremium;AccountKey=YeFdLE5sLLsVceijHjRczp3GgZ70AtN4pHmTDlL73a98Om5SmWVL3WIA9xWo4hQ84u3FCirCqM3P+AStlvSSrQ==;EndpointSuffix=core.windows.net")

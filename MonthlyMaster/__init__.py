@@ -61,13 +61,23 @@ def main(mytimer: func.TimerRequest) -> None:
     now = datetime.now().strftime("%Y%m%d-%H%M%S")
 
     eventName = now + ".json"
-    eventNameb = now + "b.json"
+
     eventNameHTML = now + ".html"
-    eventNameHTMLb = now + "b.html"
+
 
     ##Rinse and Repeat for monthly outages. 
     DFCOAL = DfChanges[["Coal"]]
-    DFCOAL = DFCOAL.loc[DFCOAL[DFCOAL >= 30].any(axis=1)]
+    DFCOAL = DFCOAL.loc[DFCOAL[DFCOAL >= 30].any(axis=1) | (DFCOAL[DFCOAL <= -30].any(axis=1))]
+    
+    
+    DFCOALJSON = DFCOAL.reset_index()
+    type = DFCOALJSON.columns[1]
+    datacoal = {
+        'type' : type,
+        'dates' : {row['Date']: row[type] for _, row in DFCOALJSON.iterrows()}
+    }
+    datacoal = pd.DataFrame(data=datacoal)
+    datacoal = datacoal.to_json()
     DFCOALHTML = DFCOAL.to_html()
 
     if DFCOAL.empty == False:
@@ -79,32 +89,27 @@ def main(mytimer: func.TimerRequest) -> None:
         
         container_clientCOAL1 = blob_service_client1.get_container_client("monthlyoutage")
         blob_client1= container_clientCOAL1.get_blob_client(eventName)
-        container_clientCOAL1= blob_client1.upload_blob(DFCOAL,overwrite=True)
+        container_clientCOAL1= blob_client1.upload_blob(datacoal,overwrite=True)
         
         container_clientHTML = blob_service_client.get_container_client("monthhtml")
         blob_client = container_clientHTML.get_blob_client(eventNameHTML)
         container_clientHTML= blob_client.upload_blob(DFCOALHTML,overwrite=True) 
         
-    DFCOALa = DfChanges[["Coal"]]
-    DFCOALa = DFCOALa.loc[DFCOALa[DFCOALa <= -30].any(axis=1)]
-    DFCOALaHTML = DFCOALa.to_html()
-    if DFCOALa.empty == False:
-        DFCOALa = DFCOALa.to_json(orient="index",date_format="iso")
-        container_clientCOAL = blob_service_client.get_container_client("monthlycoalevent")
-        blob_client = container_clientCOAL.get_blob_client(eventNameb)
-        container_clientCOAL= blob_client.upload_blob(DFCOALa)
-        
-        container_clientCOAL1 = blob_service_client1.get_container_client("monthlyoutage")
-        blob_client1= container_clientCOAL1.get_blob_client(eventName)
-        container_clientCOAL1= blob_client1.upload_blob(DFCOALa,overwrite=True)
-        
-        container_clientHTML = blob_service_client.get_container_client("monthhtml")
-        blob_client = container_clientHTML.get_blob_client(eventNameHTMLb)
-        container_clientHTML= blob_client.upload_blob(DFCOALaHTML,overwrite=True) 
+
         
 ###########################################################################################
     DFGAS = DfChanges[["Gas"]]
-    DFGAS = DFGAS.loc[DFGAS[DFGAS >= 30].any(axis=1)]
+    DFGAS = DFGAS.loc[DFGAS[DFGAS >= 50].any(axis=1) | (DFGAS[DFGAS <= -50].any(axis=1))]
+    
+        
+    DFGASJSON = DFGAS.reset_index()
+    type = DFGASJSON.columns[1]
+    DFGASJSON = {
+        'type' : type,
+        'dates' : {row['Date']: row[type] for _, row in DFGAS.iterrows()}
+    }
+    DFGASJSON = pd.DataFrame(data=DFGASJSON)
+    DFGASJSON = DFGASJSON.to_json()
     DFGASHTML = DFGAS.to_html()
     if DFGAS.empty == False:
         DFGAS = DFGAS.to_json(orient="index",date_format="iso")
@@ -114,32 +119,31 @@ def main(mytimer: func.TimerRequest) -> None:
         
         container_clientCOAL1 = blob_service_client1.get_container_client("monthlyoutage")
         blob_client1= container_clientCOAL1.get_blob_client(eventName)
-        container_clientCOAL1= blob_client1.upload_blob(DFGAS,overwrite=True)
+        container_clientCOAL1= blob_client1.upload_blob(DFGASJSON,overwrite=True)
         
         container_clientHTML = blob_service_client.get_container_client("monthhtml")
         blob_client = container_clientHTML.get_blob_client(eventNameHTML)
         container_clientHTML= blob_client.upload_blob(DFGASHTML,overwrite=True) 
         
-    DFGASa = DfChanges[["Gas"]]
-    DFGASa = DFGASa.loc[DFGASa[DFGASa <= -30].any(axis=1)]
-    DFGASaHTML = DFGASa.to_html()
-    if DFGASa.empty == False:
-        DFGASa = DFGASa.to_json(orient="index",date_format="iso")
-        container_clientGAS = blob_service_client.get_container_client("monthlygasevent")
-        blob_client = container_clientGAS.get_blob_client(eventNameb)
-        container_clientGAS= blob_client.upload_blob(DFGASa)
-        
-        container_clientCOAL1 = blob_service_client1.get_container_client("monthlyoutage")
-        blob_client1= container_clientCOAL1.get_blob_client(eventName)
-        container_clientCOAL1= blob_client1.upload_blob(DFGASa,overwrite=True)
-        
-        container_clientHTML = blob_service_client.get_container_client("monthhtml")
-        blob_client = container_clientHTML.get_blob_client(eventNameHTML)
-        container_clientHTML= blob_client.upload_blob(DFGASaHTML,overwrite=True)     
+ 
 
 ###########################################################################################
     DFDUAL = DfChanges[["DualFuel"]]
-    DFDUAL = DFDUAL.loc[DFDUAL[DFDUAL >= 30].any(axis=1)]
+    
+    DFDUAL = DFDUAL.loc[DFDUAL[DFDUAL >= 100].any(axis=1) | (DFDUAL[DFDUAL <= -100].any(axis=1))]
+    
+        
+    DFDUALJSON = DFDUAL.reset_index()
+    type = DFDUALJSON.columns[1]
+    DFDUALJSON = {
+        'type' : type,
+        'dates' : {row['Date']: row[type] for _, row in DFDUALJSON.iterrows()}
+    }
+    DFDUALJSON = pd.DataFrame(data=DFDUALJSON)
+    DFDUALJSON = DFDUALJSON.to_json()
+    
+    
+    
     DFDUALHTML = DFDUAL.to_html()
     if DFDUAL.empty == False:
         DFDUAL = DFDUAL.to_json(orient="index",date_format="iso")
@@ -149,34 +153,31 @@ def main(mytimer: func.TimerRequest) -> None:
         
         container_clientCOAL1 = blob_service_client1.get_container_client("monthlyoutage")
         blob_client1= container_clientCOAL1.get_blob_client(eventName)
-        container_clientCOAL1= blob_client1.upload_blob(DFDUAL,overwrite=True)
+        container_clientCOAL1= blob_client1.upload_blob(DFDUALJSON,overwrite=True)
         
                 
         container_clientHTML = blob_service_client.get_container_client("monthhtml")
-        blob_client = container_clientHTML.get_blob_client(eventNameb)
+        blob_client = container_clientHTML.get_blob_client(eventName)
         container_clientHTML= blob_client.upload_blob(DFDUALHTML,overwrite=True) 
         
         
-    DFDUALa = DfChanges[["DualFuel"]]
-    DFDUALa = DFDUALa.loc[DFDUALa[DFDUALa <= -30].any(axis=1)]
-    DFDUALHTML = DFDUALa.to_html()
-    if DFDUALa.empty == False:
-        DFDUALa = DFDUALa.to_json(orient="index",date_format="iso")
-        container_clientDUAL = blob_service_client.get_container_client("monthlydualevent")
-        blob_client = container_clientDUAL.get_blob_client(eventNameb)
-        container_clientDUAL= blob_client.upload_blob(DFDUALa)
-        
-        container_clientCOAL1 = blob_service_client1.get_container_client("monthlyoutage")
-        blob_client1= container_clientCOAL1.get_blob_client(eventName)
-        container_clientCOAL1= blob_client1.upload_blob(DFDUALa,overwrite=True)
-        
-        container_clientHTML = blob_service_client.get_container_client("monthhtml")
-        blob_client = container_clientHTML.get_blob_client(eventNameHTMLb)
-        container_clientHTML= blob_client.upload_blob(DFDUALHTML,overwrite=True) 
+ 
 ###########################################################################################
-
     DFHYDRO = DfChanges[["Hydro"]]
-    DFHYDRO = DFHYDRO.loc[DFHYDRO[DFHYDRO >= 50].any(axis=1)]
+    
+    DFHYDRO = DFHYDRO.loc[DFHYDRO[DFHYDRO >= 50].any(axis=1) | (DFHYDRO[DFHYDRO <= -50].any(axis=1))]
+    
+        
+    DFHYDROJSON = DFHYDRO.reset_index()
+    type = DFHYDROJSON.columns[1]
+    DFHYDROJSON = {
+        'type' : type,
+        'dates' : {row['Date']: row[type] for _, row in DFHYDROJSON.iterrows()}
+    }
+    DFHYDROJSON = pd.DataFrame(data=DFHYDROJSON)
+    DFHYDROJSON = DFHYDROJSON.to_json()
+    
+
     DFHYDROHTML = DFHYDRO.to_html()
     if DFHYDRO.empty == False:
         
@@ -187,34 +188,31 @@ def main(mytimer: func.TimerRequest) -> None:
         
         container_clientCOAL1 = blob_service_client1.get_container_client("monthlyoutage")
         blob_client1= container_clientCOAL1.get_blob_client(eventName)
-        container_clientCOAL1= blob_client1.upload_blob(DFHYDRO,overwrite=True)
+        container_clientCOAL1= blob_client1.upload_blob(DFHYDROJSON,overwrite=True)
         
                 
         container_clientHTML = blob_service_client.get_container_client("monthhtml")
         blob_client = container_clientHTML.get_blob_client(eventNameHTML)
         container_clientHTML= blob_client.upload_blob(DFHYDROHTML,overwrite=True)
              
-    DFHYDROa = DfChanges[["Hydro"]]
-    DFHYDROa = DFHYDROa.loc[DFHYDROa[DFHYDROa <= -50].any(axis=1)]
-    DFHYDROaHTML = DFHYDROa.to_html()
-    if DFHYDROa.empty == False:
-        DFHYDROa = DFHYDROa.to_json(orient="index",date_format="iso")
-        container_clientHYDRO = blob_service_client.get_container_client("monthlyhydroevent")
-        blob_client = container_clientHYDRO.get_blob_client(eventNameb)
-        container_clientHYDRO= blob_client.upload_blob(DFHYDROa)
-                
-        container_clientCOAL1 = blob_service_client1.get_container_client("monthlyoutage")
-        blob_client1= container_clientCOAL1.get_blob_client(eventName)
-        container_clientCOAL1= blob_client1.upload_blob(DFHYDROa,overwrite=True)
-        
-        
-        container_clientHTML = blob_service_client.get_container_client("monthhtml")
-        blob_client = container_clientHTML.get_blob_client(eventNameHTMLb)
-        container_clientHTML= blob_client.upload_blob(DFHYDROaHTML,overwrite=True)     
+
 
 ###########################################################################################
     DFOTHER = DfChanges[["Other"]]
-    DFOTHER = DFOTHER.loc[DFOTHER[DFOTHER >= 50].any(axis=1)]
+    DFOTHER = DFOTHER.loc[DFOTHER[DFOTHER >= 50].any(axis=1) | (DFOTHER[DFOTHER <= -50].any(axis=1))]
+    
+        
+    DFOTHERJSON = DFOTHER.reset_index()
+    type = DFOTHERJSON.columns[1]
+    DFOTHERJSON = {
+        'type' : type,
+        'dates' : {row['Date']: row[type] for _, row in DFOTHERJSON.iterrows()}
+    }
+    DFOTHERJSON = pd.DataFrame(data=DFOTHERJSON)
+    DFOTHERJSON = DFOTHERJSON.to_json()
+
+    
+
     DFOTHERHTML = DFOTHER.to_html()
     if DFOTHER.empty == False:
         DFOTHER = DFOTHER.to_json(orient="index",date_format="iso")
@@ -225,36 +223,31 @@ def main(mytimer: func.TimerRequest) -> None:
         
         container_clientCOAL1 = blob_service_client1.get_container_client("monthlyoutage")
         blob_client1= container_clientCOAL1.get_blob_client(eventName)
-        container_clientCOAL1= blob_client1.upload_blob(DFOTHER,overwrite=True)
+        container_clientCOAL1= blob_client1.upload_blob(DFOTHERJSON,overwrite=True)
         
         
         container_clientHTML = blob_service_client.get_container_client("monthhtml")
         blob_client = container_clientHTML.get_blob_client(eventNameHTML)
         container_clientHTML= blob_client.upload_blob(DFOTHERHTML,overwrite=True)     
         
-    DFOTHERa = DfChanges[["Other"]]
-    DFOTHERa = DFOTHERa.loc[DFOTHERa[DFOTHERa <= -50].any(axis=1)]
-    DFOTHERHTMLa = DFOTHERa.to_html()
-    if DFOTHERa.empty == False:
-        DFOTHERa = DFOTHERa.to_json(orient="index",date_format="iso")
-        container_clientOTHER = blob_service_client.get_container_client("monthlyotherevent")
-        blob_client = container_clientOTHER.get_blob_client(eventNameb)
-        container_clientOTHER= blob_client.upload_blob(DFOTHERa)
-        
-                
-        container_clientCOAL1 = blob_service_client1.get_container_client("monthlyoutage")
-        blob_client1= container_clientCOAL1.get_blob_client(eventName)
-        container_clientCOAL1= blob_client1.upload_blob(DFOTHERa,overwrite=True)
-        
-        container_clientHTML = blob_service_client.get_container_client("monthhtml")
-        blob_client = container_clientHTML.get_blob_client(eventNameHTMLb)
-        container_clientHTML= blob_client.upload_blob(DFOTHERHTMLa,overwrite=True)     
+ 
+
         
 
 ###########################################################################################
 
     DFSOLAR = DfChanges[["Solar"]]
-    DFSOLAR = DFSOLAR.loc[DFSOLAR[DFSOLAR >= 50].any(axis=1)]
+    DFSOLAR = DFSOLAR.loc[DFSOLAR[DFSOLAR >= 100].any(axis=1) | (DFSOLAR[DFSOLAR <= -100].any(axis=1))]
+    
+        
+    DFSOLARJSON = DFSOLAR.reset_index()
+    type = DFSOLARJSON.columns[1]
+    DFSOLARJSON = {
+        'type' : type,
+        'dates' : {row['Date']: row[type] for _, row in DFSOLARJSON.iterrows()}
+    }
+    DFSOLARJSON = pd.DataFrame(data=DFSOLARJSON)
+    DFSOLARJSON = DFSOLARJSON.to_json()
     DFSOLARHTML = DFSOLAR.to_html()
     if DFSOLAR.empty == False:
         DFSOLAR = DFSOLAR.to_json(orient="index",date_format="iso")
@@ -264,34 +257,30 @@ def main(mytimer: func.TimerRequest) -> None:
                         
         container_clientCOAL1 = blob_service_client1.get_container_client("monthlyoutage")
         blob_client1= container_clientCOAL1.get_blob_client(eventName)
-        container_clientCOAL1= blob_client1.upload_blob(DFSOLAR,overwrite=True)
+        container_clientCOAL1= blob_client1.upload_blob(DFSOLARJSON,overwrite=True)
         
         container_clientHTML = blob_service_client.get_container_client("monthhtml")
         blob_client = container_clientHTML.get_blob_client(eventNameHTML)
         container_clientHTML= blob_client.upload_blob(DFSOLARHTML,overwrite=True)     
        
-    DFSOLARa = DfChanges[["Solar"]]
-    DFSOLARa = DFSOLARa.loc[DFSOLARa[DFSOLARa <= -50].any(axis=1)]
-    DFSOLARaHTML = DFSOLARa.to_html()
-    if DFSOLARa.empty == False:
-        DFSOLARa = DFSOLARa.to_json(orient="index",date_format="iso")
-        container_clientSOLAR = blob_service_client.get_container_client("monthlysolarevent")
-        blob_client = container_clientSOLAR.get_blob_client(eventNameb)
-        container_clientSOLAR= blob_client.upload_blob(DFSOLARa)
-        
-                                
-        container_clientCOAL1 = blob_service_client1.get_container_client("monthlyoutage")
-        blob_client1= container_clientCOAL1.get_blob_client(eventName)
-        container_clientCOAL1= blob_client1.upload_blob(DFSOLARa,overwrite=True)
-        
-        container_clientHTML = blob_service_client.get_container_client("monthhtml")
-        blob_client = container_clientHTML.get_blob_client(eventNameHTMLb)
-        container_clientHTML= blob_client.upload_blob(DFSOLARaHTML,overwrite=True)     
+
         
 ###########################################################################################
 
     DFWIND = DfChanges[["Wind"]]
-    DFWIND = DFWIND.loc[DFWIND[DFWIND >= 50].any(axis=1)]
+    DFWIND = DFWIND.loc[DFWIND[DFWIND >= 100].any(axis=1) | (DFWIND[DFWIND <= -100].any(axis=1))]
+    
+        
+    DFWINDJSON = DFWIND.reset_index()
+    type = DFWINDJSON.columns[1]
+    DFWINDJSON = {
+        'type' : type,
+        'dates' : {row['Date']: row[type] for _, row in DFWINDJSON.iterrows()}
+    }
+    DFWINDJSON = pd.DataFrame(data=DFWINDJSON)
+    DFWINDJSON = DFWINDJSON.to_json()
+
+
     DFWINDHTML = DFWIND.to_html()
     if DFWIND.empty == False:
         DFWIND = DFWIND.to_json(orient="index",date_format="iso")
@@ -303,33 +292,28 @@ def main(mytimer: func.TimerRequest) -> None:
                                         
         container_clientCOAL1 = blob_service_client1.get_container_client("monthlyoutage")
         blob_client1= container_clientCOAL1.get_blob_client(eventName)
-        container_clientCOAL1= blob_client1.upload_blob(DFWIND,overwrite=True)
+        container_clientCOAL1= blob_client1.upload_blob(DFWINDJSON,overwrite=True)
         
         
         container_clientHTML = blob_service_client.get_container_client("monthhtml")
         blob_client = container_clientHTML.get_blob_client(eventNameHTML)
         container_clientHTML= blob_client.upload_blob(DFWINDHTML,overwrite=True)     
 
-    DFWINDa = DfChanges[["Wind"]]
-    DFWINDa = DFWINDa.loc[DFWINDa[DFWINDa <= -50].any(axis=1)]
-    DFWINDHTMLa = DFWINDa.to_html()
-    if DFWINDa.empty == False:
-        DFWINDa = DFWINDa.to_json(orient="index",date_format="iso")
-        container_clientWIND = blob_service_client.get_container_client("monthlywindevent")
-        blob_client = container_clientWIND.get_blob_client(eventNameb)
-        container_clientWIND= blob_client.upload_blob(DFWINDa)
-        
-        container_clientCOAL1 = blob_service_client1.get_container_client("monthlyoutage")
-        blob_client1= container_clientCOAL1.get_blob_client(eventName)
-        container_clientCOAL1= blob_client1.upload_blob(DFWINDa,overwrite=True)
-        
-        container_clientHTML = blob_service_client.get_container_client("monthhtml")
-        blob_client = container_clientHTML.get_blob_client(eventNameHTMLb)
-        container_clientHTML= blob_client.upload_blob(DFWINDHTMLa,overwrite=True)      
+ 
 ###########################################################################################
 
     DFSTORAGE = DfChanges[["Energy"]]
-    DFSTORAGE = DFSTORAGE.loc[DFSTORAGE[DFSTORAGE >= 50].any(axis=1)]
+    DFSTORAGE = DFSTORAGE.loc[DFSTORAGE[DFSTORAGE >= 100].any(axis=1) | (DFSTORAGE[DFSTORAGE <= -100].any(axis=1))]
+    
+        
+    DFSTORAGEJSON = DFSTORAGE.reset_index()
+    type = DFSTORAGEJSON.columns[1]
+    DFSTORAGEJSON = {
+        'type' : type,
+        'dates' : {row['Date']: row[type] for _, row in DFSTORAGEJSON.iterrows()}
+    }
+    DFSTORAGEJSON = pd.DataFrame(data=DFSTORAGEJSON)
+    DFSTORAGEJSON = DFSTORAGEJSON.to_json()
     DFSTORAGEHTML = DFSTORAGE.to_html()
     if DFSTORAGE.empty == False:
         DFSTORAGE = DFSTORAGE.to_json(orient="index",date_format="iso")
@@ -340,7 +324,7 @@ def main(mytimer: func.TimerRequest) -> None:
                 
         container_clientCOAL1 = blob_service_client1.get_container_client("monthlyoutage")
         blob_client1= container_clientCOAL1.get_blob_client(eventName)
-        container_clientCOAL1= blob_client1.upload_blob(DFSTORAGE,overwrite=True)
+        container_clientCOAL1= blob_client1.upload_blob(DFSTORAGEJSON,overwrite=True)
         
         
         container_clientHTML = blob_service_client.get_container_client("monthhtml")
@@ -348,23 +332,7 @@ def main(mytimer: func.TimerRequest) -> None:
         container_clientHTML= blob_client.upload_blob(DFSTORAGEHTML,overwrite=True)         
         
         
-    DFSTORAGEa = DfChanges[["Energy"]]
-    DFSTORAGEa = DFSTORAGEa.loc[DFSTORAGEa[DFSTORAGEa <= -50].any(axis=1)]
-    DFSTORAGEHTMLa = DFSTORAGEa.to_html()
-    if DFSTORAGEa.empty == False:
-        DFSTORAGEa = DFSTORAGEa.to_json(orient="index",date_format="iso")
-        container_clientSTORAGE = blob_service_client.get_container_client("monthlystorageevent")
-        blob_client = container_clientSTORAGE.get_blob_client(eventNameb)
-        container_clientSTORAGE= blob_client.upload_blob(DFSTORAGEa)
-        
-                        
-        container_clientCOAL1 = blob_service_client1.get_container_client("monthlyoutage")
-        blob_client1= container_clientCOAL1.get_blob_client(eventName)
-        container_clientCOAL1= blob_client1.upload_blob(DFSTORAGEa,overwrite=True)
-        
-        container_clientHTML = blob_service_client.get_container_client("monthhtml")
-        blob_client = container_clientHTML.get_blob_client(eventNameHTMLb)
-        container_clientHTML= blob_client.upload_blob(DFSTORAGEHTMLa,overwrite=True)     
+
 # ###########################################################################################
 #     ## Overwrite master file with drone.
     eventName = "monthlymaster.csv"
