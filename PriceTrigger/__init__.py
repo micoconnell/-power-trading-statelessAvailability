@@ -60,19 +60,18 @@ def main(mytimer: func.TimerRequest) -> None:
     AILForecast=AILForecast.drop(["pool_price","rolling_30day_avg"],axis=1)
     print(AILForecast)
     if AILForecast.empty == False:
-        try:
-            endDate = endDateHTML
-            eventName = ".html"
-            endDate = endDate + eventName
-            
-            AIL = AILForecast.to_html()
-            print(AIL)
-            blob_service_client = BlobServiceClient.from_connection_string("DefaultEndpointsProtocol=https;AccountName=sevendaypremium;AccountKey=YeFdLE5sLLsVceijHjRczp3GgZ70AtN4pHmTDlL73a98Om5SmWVL3WIA9xWo4hQ84u3FCirCqM3P+AStlvSSrQ==;EndpointSuffix=core.windows.net")
-            container_client = blob_service_client.get_container_client("checktext")
-            blob_client = container_client.get_blob_client(endDate)
-            container_client = blob_client.upload_blob(AIL,overwrite=False) 
-        except:
-            print("An exception occurred")
+
+        endDate = endDateHTML
+        eventName = ".html"
+        endDate = endDate + eventName
+        
+        AIL = AILForecast.to_html()
+        print(AIL)
+        blob_service_client = BlobServiceClient.from_connection_string("DefaultEndpointsProtocol=https;AccountName=sevendaypremium;AccountKey=YeFdLE5sLLsVceijHjRczp3GgZ70AtN4pHmTDlL73a98Om5SmWVL3WIA9xWo4hQ84u3FCirCqM3P+AStlvSSrQ==;EndpointSuffix=core.windows.net")
+        container_client = blob_service_client.get_container_client("checktext")
+        blob_client = container_client.get_blob_client(endDate)
+        container_client = blob_client.upload_blob(AIL,overwrite=False) 
+
 
     
     

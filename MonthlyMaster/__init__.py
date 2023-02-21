@@ -57,6 +57,9 @@ def main(mytimer: func.TimerRequest) -> None:
     ## Subtract files (drone - master) so that files are negative for returning outages, postive 
     ## for new outages 
     DfChanges = dfAlldrone - dfMaster
+    DfChanges = DfChanges.reset_index()
+    DfChanges['Month'] = DfChanges['Month'].astype("string")
+    DfChanges= DfChanges.set_index('Month',drop=True)
     print(DfChanges)
     now = datetime.now().strftime("%Y%m%d-%H%M%S")
 
@@ -74,7 +77,7 @@ def main(mytimer: func.TimerRequest) -> None:
     type = DFCOALJSON.columns[1]
     datacoal = {
         'type' : type,
-        'dates' : {row['Date']: row[type] for _, row in DFCOALJSON.iterrows()}
+        'dates' : {row['Month']: row[type] for _, row in DFCOALJSON.iterrows()}
     }
     datacoal = pd.DataFrame(data=datacoal)
     datacoal = datacoal.to_json()
@@ -99,14 +102,14 @@ def main(mytimer: func.TimerRequest) -> None:
         
 ###########################################################################################
     DFGAS = DfChanges[["Gas"]]
-    DFGAS = DFGAS.loc[DFGAS[DFGAS >= 50].any(axis=1) | (DFGAS[DFGAS <= -50].any(axis=1))]
+    DFGAS = DFGAS.loc[DFGAS[DFGAS >= 30].any(axis=1) | (DFGAS[DFGAS <= -30].any(axis=1))]
     
         
     DFGASJSON = DFGAS.reset_index()
     type = DFGASJSON.columns[1]
     DFGASJSON = {
         'type' : type,
-        'dates' : {row['Date']: row[type] for _, row in DFGAS.iterrows()}
+        'dates' : {row['Month']: row[type] for _, row in DFGASJSON.iterrows()}
     }
     DFGASJSON = pd.DataFrame(data=DFGASJSON)
     DFGASJSON = DFGASJSON.to_json()
@@ -130,14 +133,14 @@ def main(mytimer: func.TimerRequest) -> None:
 ###########################################################################################
     DFDUAL = DfChanges[["DualFuel"]]
     
-    DFDUAL = DFDUAL.loc[DFDUAL[DFDUAL >= 100].any(axis=1) | (DFDUAL[DFDUAL <= -100].any(axis=1))]
+    DFDUAL = DFDUAL.loc[DFDUAL[DFDUAL >= 30].any(axis=1) | (DFDUAL[DFDUAL <= -30].any(axis=1))]
     
         
     DFDUALJSON = DFDUAL.reset_index()
     type = DFDUALJSON.columns[1]
     DFDUALJSON = {
         'type' : type,
-        'dates' : {row['Date']: row[type] for _, row in DFDUALJSON.iterrows()}
+        'dates' : {row['Month']: row[type] for _, row in DFDUALJSON.iterrows()}
     }
     DFDUALJSON = pd.DataFrame(data=DFDUALJSON)
     DFDUALJSON = DFDUALJSON.to_json()
@@ -165,14 +168,14 @@ def main(mytimer: func.TimerRequest) -> None:
 ###########################################################################################
     DFHYDRO = DfChanges[["Hydro"]]
     
-    DFHYDRO = DFHYDRO.loc[DFHYDRO[DFHYDRO >= 50].any(axis=1) | (DFHYDRO[DFHYDRO <= -50].any(axis=1))]
+    DFHYDRO = DFHYDRO.loc[DFHYDRO[DFHYDRO >= 30].any(axis=1) | (DFHYDRO[DFHYDRO <= -30].any(axis=1))]
     
         
     DFHYDROJSON = DFHYDRO.reset_index()
     type = DFHYDROJSON.columns[1]
     DFHYDROJSON = {
         'type' : type,
-        'dates' : {row['Date']: row[type] for _, row in DFHYDROJSON.iterrows()}
+        'dates' : {row['Month']: row[type] for _, row in DFHYDROJSON.iterrows()}
     }
     DFHYDROJSON = pd.DataFrame(data=DFHYDROJSON)
     DFHYDROJSON = DFHYDROJSON.to_json()
@@ -199,14 +202,14 @@ def main(mytimer: func.TimerRequest) -> None:
 
 ###########################################################################################
     DFOTHER = DfChanges[["Other"]]
-    DFOTHER = DFOTHER.loc[DFOTHER[DFOTHER >= 50].any(axis=1) | (DFOTHER[DFOTHER <= -50].any(axis=1))]
+    DFOTHER = DFOTHER.loc[DFOTHER[DFOTHER >= 30].any(axis=1) | (DFOTHER[DFOTHER <= -30].any(axis=1))]
     
         
     DFOTHERJSON = DFOTHER.reset_index()
     type = DFOTHERJSON.columns[1]
     DFOTHERJSON = {
         'type' : type,
-        'dates' : {row['Date']: row[type] for _, row in DFOTHERJSON.iterrows()}
+        'dates' : {row['Month']: row[type] for _, row in DFOTHERJSON.iterrows()}
     }
     DFOTHERJSON = pd.DataFrame(data=DFOTHERJSON)
     DFOTHERJSON = DFOTHERJSON.to_json()
@@ -237,14 +240,14 @@ def main(mytimer: func.TimerRequest) -> None:
 ###########################################################################################
 
     DFSOLAR = DfChanges[["Solar"]]
-    DFSOLAR = DFSOLAR.loc[DFSOLAR[DFSOLAR >= 100].any(axis=1) | (DFSOLAR[DFSOLAR <= -100].any(axis=1))]
+    DFSOLAR = DFSOLAR.loc[DFSOLAR[DFSOLAR >= 30].any(axis=1) | (DFSOLAR[DFSOLAR <= -30].any(axis=1))]
     
         
     DFSOLARJSON = DFSOLAR.reset_index()
     type = DFSOLARJSON.columns[1]
     DFSOLARJSON = {
         'type' : type,
-        'dates' : {row['Date']: row[type] for _, row in DFSOLARJSON.iterrows()}
+        'dates' : {row['Month']: row[type] for _, row in DFSOLARJSON.iterrows()}
     }
     DFSOLARJSON = pd.DataFrame(data=DFSOLARJSON)
     DFSOLARJSON = DFSOLARJSON.to_json()
@@ -268,14 +271,14 @@ def main(mytimer: func.TimerRequest) -> None:
 ###########################################################################################
 
     DFWIND = DfChanges[["Wind"]]
-    DFWIND = DFWIND.loc[DFWIND[DFWIND >= 100].any(axis=1) | (DFWIND[DFWIND <= -100].any(axis=1))]
+    DFWIND = DFWIND.loc[DFWIND[DFWIND >= 30].any(axis=1) | (DFWIND[DFWIND <= -30].any(axis=1))]
     
         
     DFWINDJSON = DFWIND.reset_index()
     type = DFWINDJSON.columns[1]
     DFWINDJSON = {
         'type' : type,
-        'dates' : {row['Date']: row[type] for _, row in DFWINDJSON.iterrows()}
+        'dates' : {row['Month']: row[type] for _, row in DFWINDJSON.iterrows()}
     }
     DFWINDJSON = pd.DataFrame(data=DFWINDJSON)
     DFWINDJSON = DFWINDJSON.to_json()
@@ -303,14 +306,14 @@ def main(mytimer: func.TimerRequest) -> None:
 ###########################################################################################
 
     DFSTORAGE = DfChanges[["Energy"]]
-    DFSTORAGE = DFSTORAGE.loc[DFSTORAGE[DFSTORAGE >= 100].any(axis=1) | (DFSTORAGE[DFSTORAGE <= -100].any(axis=1))]
+    DFSTORAGE = DFSTORAGE.loc[DFSTORAGE[DFSTORAGE >= 30].any(axis=1) | (DFSTORAGE[DFSTORAGE <= -30].any(axis=1))]
     
         
     DFSTORAGEJSON = DFSTORAGE.reset_index()
     type = DFSTORAGEJSON.columns[1]
     DFSTORAGEJSON = {
         'type' : type,
-        'dates' : {row['Date']: row[type] for _, row in DFSTORAGEJSON.iterrows()}
+        'dates' : {row['Month']: row[type] for _, row in DFSTORAGEJSON.iterrows()}
     }
     DFSTORAGEJSON = pd.DataFrame(data=DFSTORAGEJSON)
     DFSTORAGEJSON = DFSTORAGEJSON.to_json()

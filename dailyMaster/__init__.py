@@ -61,7 +61,9 @@ def main(mytimer: func.TimerRequest) -> None:
     ## that are returning are displayed as negative.
     DfChanges = dfAlldrone - dfMaster
     DfChanges = DfChanges.reset_index()
-    dfMaster['Date'] = dfMaster['Date'].astype("string")
+    DfChanges['Date'] = DfChanges['Date'].astype("string")
+    DfChanges= DfChanges.set_index('Date',drop=True)
+    print(DfChanges)
     ## Naming Convention for blobs.
     now = datetime.now().strftime("%Y%m%d-%H%M%S")
     eventName = now + ".json"
@@ -74,7 +76,7 @@ def main(mytimer: func.TimerRequest) -> None:
     ## and any outages that satsify this criteria are uploaded to specific blob storage.
     ## If empty is True, program proceeds checking.
     DFCOAL = DfChanges[["Coal"]]
-    DFCOAL = DFCOAL.loc[DFCOAL[DFCOAL >= 100].any(axis=1) | (DFCOAL[DFCOAL <= -100].any(axis=1))]
+    DFCOAL = DFCOAL.loc[DFCOAL[DFCOAL >= 5].any(axis=1) | (DFCOAL[DFCOAL <= -5].any(axis=1))]
 
     DFCOALJSON = DFCOAL.reset_index()
     type = DFCOALJSON.columns[1]
