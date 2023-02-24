@@ -11,7 +11,7 @@ def main(mytimer: func.TimerRequest) -> None:
 
     startDateDASHED = datetime.now().strftime("%Y-%m-%d %H")
     endDate = pd.to_datetime(startDateDASHED) + pd.DateOffset(hours=-7)
-    endDateHTML= datetime.now().strftime("%Y-%m-%d %H")
+    endDateHTML= datetime.now().strftime("%Y-%m-%d %H:%M")
 # #adjust dates with the function below
 #     startDateDASHED = pd.to_datetime(startDateDASHED) + pd.DateOffset(hours=-7)
     
@@ -41,6 +41,7 @@ def main(mytimer: func.TimerRequest) -> None:
         return AILForecast
 
     AILForecast = aeso_AILForecast()
+    #AILForecast['Time']= datetime.now().strftime("%Y-%m-%d %H:%M")
     #AILForecast = AILForecast[AILForecast.index >= endDate]
     #AIL = AILForecast['forecast_pool_price']
     #AILForecast = AILForecast[AILForecast.index >= endDate]
@@ -48,6 +49,7 @@ def main(mytimer: func.TimerRequest) -> None:
     #print(AIL)
     #AIL = AIL.tail(n=7)
     #AIL = AIL.fillna('')
+    print(AILForecast)
     truthy = (AILForecast['system_marginal_price'] >= 150).any()
     #truthy500 = (AIL['forecast_pool_price'] >= 500).any()
     #AILForecast = AILForecast.loc[AILForecast[AILForecast >= 150].any(axis=1)]

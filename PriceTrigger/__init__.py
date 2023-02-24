@@ -37,8 +37,13 @@ def main(mytimer: func.TimerRequest) -> None:
         AILForecast = df_SMP
 
         AILForecast = AILForecast.drop('begin_datetime_utc',axis =1)
-        
-        AILForecast.set_index("begin_datetime_mpt",inplace = True)
+        AILForecast['begin_datetime_mpt'] = pd.to_datetime(AILForecast['begin_datetime_mpt'])+ pd.DateOffset(hours=+1)
+        AILForecast['begin_datetime_mpt'] = AILForecast['begin_datetime_mpt'].dt.hour
+        AILForecast['begin_datetime_mpt'] = AILForecast['begin_datetime_mpt'].astype(str)
+        AILForecast['HourEnding'] = "HE " + AILForecast['begin_datetime_mpt']
+        AILForecast=AILForecast.drop(["begin_datetime_mpt","pool_price","rolling_30day_avg"],axis=1)
+        #AILForecast['begin_datetime_mpt'] = AILForecast['begin_datetime_mpt'].strftime("%H")
+        AILForecast.set_index("HourEnding",inplace = True)
 
         AILForecast = AILForecast.apply(pd.to_numeric)
         
@@ -51,9 +56,12 @@ def main(mytimer: func.TimerRequest) -> None:
     #AIL = AILForecast['forecast_pool_price']
     #AILForecast = AILForecast[AILForecast.index >= endDate]
     AIL = AILForecast.dropna(how='all')
-    print(AIL)
-    AIL = AIL.tail(n=7)
+
+    AIL = AIL.tail(n=6)
     AIL = AIL.fillna('')
+
+    #AIL = AIL.reset_index()
+    print(AIL)
     truthy = (AIL['forecast_pool_price'] >= 150).any()
     truthy500 = (AIL['forecast_pool_price'] >= 500).any()
     #AILForecast = AILForecast.loc[AILForecast[AILForecast >= 150].any(axis=1)]
