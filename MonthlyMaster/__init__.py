@@ -62,10 +62,28 @@ def main(mytimer: func.TimerRequest) -> None:
     DfChanges= DfChanges.set_index('Month',drop=True)
     print(DfChanges)
     now = datetime.now().strftime("%Y%m%d-%H%M%S")
-
     eventName = now + ".json"
 
     eventNameHTML = now + ".html"
+
+    eventNameCoal = now + "Coal" + ".json"
+    eventNameGas = now + "Gas" + ".json"
+    eventNameDual = now + "Dual" + ".json"
+    eventNameHydro = now + "Hydro" + ".json"
+    eventNameSolar = now + "Solar" + ".json"
+    eventNameWind = now + "Wind" + ".json"
+    eventNameStorage = now + "Storage" + ".json"
+    eventNameOther = now + "Other" + ".json"
+
+    eventNameCoalHTML = now + "Coal" + ".html"
+    eventNameGasHTML = now + "Gas" + ".html"
+    eventNameDualHTML = now + "Dual" + ".html"
+    eventNameHydroHTML = now + "Hydro" + ".html"
+    eventNameSolarHTML = now + "Solar"+ ".html"
+    eventNameWindHTML = now + "Wind" + ".html"
+    eventNameStorageHTML = now+  "Storage" + ".html"
+    eventNameOtherHTML = now + "Other" + ".html"
+
 
 
     ##Rinse and Repeat for monthly outages. 
@@ -91,11 +109,11 @@ def main(mytimer: func.TimerRequest) -> None:
         container_clientCOAL= blob_client.upload_blob(DFCOAL)
         
         container_clientCOAL1 = blob_service_client1.get_container_client("monthlyoutage")
-        blob_client1= container_clientCOAL1.get_blob_client(eventName)
+        blob_client1= container_clientCOAL1.get_blob_client(eventNameCoal)
         container_clientCOAL1= blob_client1.upload_blob(datacoal,overwrite=True)
         
         container_clientHTML = blob_service_client.get_container_client("monthhtml")
-        blob_client = container_clientHTML.get_blob_client(eventNameHTML)
+        blob_client = container_clientHTML.get_blob_client(eventNameCoalHTML)
         container_clientHTML= blob_client.upload_blob(DFCOALHTML,overwrite=True) 
         
 
@@ -121,11 +139,11 @@ def main(mytimer: func.TimerRequest) -> None:
         container_clientGAS= blob_client.upload_blob(DFGAS)
         
         container_clientCOAL1 = blob_service_client1.get_container_client("monthlyoutage")
-        blob_client1= container_clientCOAL1.get_blob_client(eventName)
+        blob_client1= container_clientCOAL1.get_blob_client(eventNameGas)
         container_clientCOAL1= blob_client1.upload_blob(DFGASJSON,overwrite=True)
         
         container_clientHTML = blob_service_client.get_container_client("monthhtml")
-        blob_client = container_clientHTML.get_blob_client(eventNameHTML)
+        blob_client = container_clientHTML.get_blob_client(eventNameGasHTML)
         container_clientHTML= blob_client.upload_blob(DFGASHTML,overwrite=True) 
         
  
@@ -155,12 +173,12 @@ def main(mytimer: func.TimerRequest) -> None:
         container_clientDUAL= blob_client.upload_blob(DFDUAL)
         
         container_clientCOAL1 = blob_service_client1.get_container_client("monthlyoutage")
-        blob_client1= container_clientCOAL1.get_blob_client(eventName)
+        blob_client1= container_clientCOAL1.get_blob_client(eventNameDual)
         container_clientCOAL1= blob_client1.upload_blob(DFDUALJSON,overwrite=True)
         
                 
         container_clientHTML = blob_service_client.get_container_client("monthhtml")
-        blob_client = container_clientHTML.get_blob_client(eventName)
+        blob_client = container_clientHTML.get_blob_client(eventNameDualHTML)
         container_clientHTML= blob_client.upload_blob(DFDUALHTML,overwrite=True) 
         
         
@@ -190,12 +208,12 @@ def main(mytimer: func.TimerRequest) -> None:
         container_clientHYDRO= blob_client.upload_blob(DFHYDRO)
         
         container_clientCOAL1 = blob_service_client1.get_container_client("monthlyoutage")
-        blob_client1= container_clientCOAL1.get_blob_client(eventName)
+        blob_client1= container_clientCOAL1.get_blob_client(eventNameHydro)
         container_clientCOAL1= blob_client1.upload_blob(DFHYDROJSON,overwrite=True)
         
                 
         container_clientHTML = blob_service_client.get_container_client("monthhtml")
-        blob_client = container_clientHTML.get_blob_client(eventNameHTML)
+        blob_client = container_clientHTML.get_blob_client(eventNameHydroHTML)
         container_clientHTML= blob_client.upload_blob(DFHYDROHTML,overwrite=True)
              
 
@@ -225,12 +243,12 @@ def main(mytimer: func.TimerRequest) -> None:
         
         
         container_clientCOAL1 = blob_service_client1.get_container_client("monthlyoutage")
-        blob_client1= container_clientCOAL1.get_blob_client(eventName)
+        blob_client1= container_clientCOAL1.get_blob_client(eventNameOther)
         container_clientCOAL1= blob_client1.upload_blob(DFOTHERJSON,overwrite=True)
         
         
         container_clientHTML = blob_service_client.get_container_client("monthhtml")
-        blob_client = container_clientHTML.get_blob_client(eventNameHTML)
+        blob_client = container_clientHTML.get_blob_client(eventNameOtherHTML)
         container_clientHTML= blob_client.upload_blob(DFOTHERHTML,overwrite=True)     
         
  
@@ -259,11 +277,11 @@ def main(mytimer: func.TimerRequest) -> None:
         container_clientSOLAR= blob_client.upload_blob(DFSOLAR)
                         
         container_clientCOAL1 = blob_service_client1.get_container_client("monthlyoutage")
-        blob_client1= container_clientCOAL1.get_blob_client(eventName)
+        blob_client1= container_clientCOAL1.get_blob_client(eventNameSolar)
         container_clientCOAL1= blob_client1.upload_blob(DFSOLARJSON,overwrite=True)
         
         container_clientHTML = blob_service_client.get_container_client("monthhtml")
-        blob_client = container_clientHTML.get_blob_client(eventNameHTML)
+        blob_client = container_clientHTML.get_blob_client(eventNameSolarHTML)
         container_clientHTML= blob_client.upload_blob(DFSOLARHTML,overwrite=True)     
        
 
@@ -294,12 +312,12 @@ def main(mytimer: func.TimerRequest) -> None:
         
                                         
         container_clientCOAL1 = blob_service_client1.get_container_client("monthlyoutage")
-        blob_client1= container_clientCOAL1.get_blob_client(eventName)
+        blob_client1= container_clientCOAL1.get_blob_client(eventNameWind)
         container_clientCOAL1= blob_client1.upload_blob(DFWINDJSON,overwrite=True)
         
         
         container_clientHTML = blob_service_client.get_container_client("monthhtml")
-        blob_client = container_clientHTML.get_blob_client(eventNameHTML)
+        blob_client = container_clientHTML.get_blob_client(eventNameWindHTML)
         container_clientHTML= blob_client.upload_blob(DFWINDHTML,overwrite=True)     
 
  
@@ -326,12 +344,12 @@ def main(mytimer: func.TimerRequest) -> None:
         
                 
         container_clientCOAL1 = blob_service_client1.get_container_client("monthlyoutage")
-        blob_client1= container_clientCOAL1.get_blob_client(eventName)
+        blob_client1= container_clientCOAL1.get_blob_client(eventNameStorage)
         container_clientCOAL1= blob_client1.upload_blob(DFSTORAGEJSON,overwrite=True)
         
         
         container_clientHTML = blob_service_client.get_container_client("monthhtml")
-        blob_client = container_clientHTML.get_blob_client(eventNameHTML)
+        blob_client = container_clientHTML.get_blob_client(eventNameStorageHTML)
         container_clientHTML= blob_client.upload_blob(DFSTORAGEHTML,overwrite=True)         
         
         

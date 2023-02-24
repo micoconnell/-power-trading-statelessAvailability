@@ -107,8 +107,8 @@ async def main(mytimer: func.TimerRequest):
         list_of_namesCSV = list_of_namesCSV
         now = datetime.now().strftime("%Y%m%d-%H%M%S")
         ##Events are labelled by datetime and concatted with .csv
-        eventName = now + ".json"
-        eventNameHTML = now + ".html"
+        eventName = now + list_of_names + ".json"
+        eventNameHTML = now + list_of_names +  ".html"
 
         
         df_drone = pd.read_csv(container_clientDrone,index_col=[0])

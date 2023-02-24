@@ -12,7 +12,7 @@
     "id": "Microsoft.Azure.Functions.ExtensionBundle",
     "version": "[3.*, 4.0.0)"
   },
-  "functions": ["SevenDayPROD","StackModelGroupingGas","UpdateMonthlyAgainstKnown","PriceTrigger","TransmissionMaster","dailyDrone","dailyMaster","MonthlyDrone","MonthlyMaster","sevendaydrone","sevendaymaster","TransmissionDrone","MonthlyOutageSQLUpdate", "DailyOutageSQLUpdate" ],
+  "functions": ["SMPTrigger","SevenDayPROD","StackModelGroupingGas","UpdateMonthlyAgainstKnown","PriceTrigger","TransmissionMaster","dailyDrone","dailyMaster","MonthlyDrone","MonthlyMaster","sevendaydrone","sevendaymaster","TransmissionDrone","MonthlyOutageSQLUpdate", "DailyOutageSQLUpdate" ],
   "functionTimeout": "02:00:00",
   "healthMonitor": {
       "enabled": false,
