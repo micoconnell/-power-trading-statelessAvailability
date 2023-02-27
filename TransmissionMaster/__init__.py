@@ -62,7 +62,7 @@ def main(mytimer: func.TimerRequest) :
         container_clientMaster = blob_service_client.get_container_client("transmissionmaster")
         blob_client = container_clientMaster.get_blob_client("transmissionmaster.csv")
         container_clientMaster= blob_client.upload_blob(dfDroneStagnant,overwrite=True)
-        print("FUCK")
+        
         # Upload an html of the changes (for now, this is just an old master file.)
         dfNEW = dfNEW.to_html()
         container_clientHTMLupdate = blob_service_client.get_container_client("transmissionupdate")
