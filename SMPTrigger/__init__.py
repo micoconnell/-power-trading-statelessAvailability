@@ -11,7 +11,7 @@ def main(mytimer: func.TimerRequest) -> None:
 
     startDateDASHED = datetime.now().strftime("%Y-%m-%d %H")
     endDate = pd.to_datetime(startDateDASHED) + pd.DateOffset(hours=-7)
-    endDateHTML= datetime.now().strftime("%Y-%m-%d %H:%M")
+    endDateHTML= datetime.now().strftime("%Y-%m-%d %H")
 # #adjust dates with the function below
 #     startDateDASHED = pd.to_datetime(startDateDASHED) + pd.DateOffset(hours=-7)
     
