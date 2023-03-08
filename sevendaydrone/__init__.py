@@ -3,7 +3,7 @@ import logging
 import requests
 import pandas as pd
 import re
-
+import numpy as np
 import azure.functions as func
 import time
 import azure.functions as func
@@ -90,7 +90,8 @@ async def main(mytimer: func.TimerRequest):
 
         
         
-        #
+        
+        df = df.fillna(method='ffill')
         dfCOAL = df[0:7]
         dfCOAL = dfCOAL.round(0) 
         dfGAS = df[7:14]

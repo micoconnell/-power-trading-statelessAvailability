@@ -41,8 +41,8 @@ def main(mytimer: func.TimerRequest):
     df['Complete Date'] = df['Complete Date'].astype(str)
 
     
-    df = df.drop(['AP Outage Title','Path 3 N->S BC - US','Path 3 S -> N CUS ING', 'Load Impact','Path 3 N->S ING - CUS','Outage Purpose','Recall Time','Under Review AOP','Resource Impact','Posted to Plan','Requested Equipment','Path 3 S -> N US - BC'], axis=1)
-    print(df.columns)
+    df = df.drop(['AP Outage Title','Path 3 N->S BC - US','Path 3 S -> N CUS ING', 'Load Impact','Path 3 N->S ING - CUS','Outage Purpose','Recall Time','Under Review AOP','Resource Impact','Posted to Plan','Requested Equipment','Path 3 S -> N US - BC','Revision Date'], axis=1)
+
     df = df.to_csv()
     
     blob_service_client = BlobServiceClient.from_connection_string("DefaultEndpointsProtocol=https;AccountName=sevendaypremium;AccountKey=YeFdLE5sLLsVceijHjRczp3GgZ70AtN4pHmTDlL73a98Om5SmWVL3WIA9xWo4hQ84u3FCirCqM3P+AStlvSSrQ==;EndpointSuffix=core.windows.net")

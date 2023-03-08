@@ -10,3 +10,4 @@ lxml
 xlrd
 dataframe_image
 pyodbc
+bs4

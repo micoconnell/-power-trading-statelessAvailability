@@ -37,7 +37,7 @@ def main(mytimer: func.TimerRequest) -> None:
     dfWind = DFMONTHLY['Wind']
     dfEnergy = DFMONTHLY['Energy Storage']
     dfOther = DFMONTHLY['Biomass and Other']
-    print(dfCoal)
+
     def outageAESO(DF,DataBaseGrouping):
         DF=DF
         DataBaseGrouping = DataBaseGrouping
@@ -53,12 +53,12 @@ def main(mytimer: func.TimerRequest) -> None:
             last_date_of_month=last_date_of_month.replace("-","")
             print(first_day_of_month,last_date_of_month)
             tempVal = DF[i]
-            print(tempVal)
+
             i=i+1
             print(DataBaseGrouping)
             response = requests.get("https://azureeventtest.azurewebsites.net/api/httptrigger1?gentype={0}&asset=AESO&datestart={1}&dateend={2}&volume={3}".format(DataBaseGrouping,first_day_of_month,last_date_of_month,tempVal))
-            print(response)
-            time.sleep(2)   
+
+
     outageAESO(dfCoal,"coalAB")
     outageAESO(dfGas,"gasAB")
     outageAESO(dfDual,"dualAB")

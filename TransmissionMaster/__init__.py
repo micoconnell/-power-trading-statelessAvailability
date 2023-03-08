@@ -23,7 +23,6 @@ def main(mytimer: func.TimerRequest) :
     dfDroneStagnant = dfDrone
     dfDroneStagnant['Complete Date']= pd.to_datetime(dfDroneStagnant['Complete Date'])
     dfDroneStagnant['Start Date']= pd.to_datetime(dfDroneStagnant['Start Date'])
-    dfDroneStagnant['Revision Date']= pd.to_datetime(dfDroneStagnant['Revision Date'])
     dfDroneStagnant = dfDroneStagnant.to_csv()
  
     ## Read Master file
@@ -36,16 +35,15 @@ def main(mytimer: func.TimerRequest) :
 
     dfDrone['Complete Date']= pd.to_datetime(dfDrone['Complete Date'])
     dfDrone['Start Date']= pd.to_datetime(dfDrone['Start Date'])
-    dfDrone['Revision Date']= pd.to_datetime(dfDrone['Revision Date'])
+
 
     dfMaster['Complete Date']= pd.to_datetime(dfMaster['Complete Date'])
     dfMaster['Start Date']= pd.to_datetime(dfMaster['Start Date'])
-    dfMaster['Revision Date']= pd.to_datetime(dfMaster['Revision Date'])
 
     ##Concat both files
     df_diffNEW = pd.concat([dfDrone,dfMaster]).reset_index(drop=True)
-    df_diffNEWMASTER = df_diffNEW.sort_values('Revision Date').drop_duplicates('Outage #',keep='first')
-    df_diffCHANGELOG = df_diffNEW.sort_values('Revision Date').drop_duplicates('Outage #',keep='last')
+    df_diffNEWMASTER = df_diffNEW.sort_values('Outage #').drop_duplicates('Outage #',keep='first')
+    df_diffCHANGELOG = df_diffNEW.sort_values('Outage #').drop_duplicates('Outage #',keep='last')
     
     df = pd.merge(df_diffNEWMASTER, dfMaster, how='left', indicator='Exist')
     df['Exist'] = np.where(df.Exist == 'both', True, False)
