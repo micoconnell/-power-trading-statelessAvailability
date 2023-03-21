@@ -11,3 +11,8 @@ xlrd
 dataframe_image
 pyodbc
 bs4
+pretty-html-table
+plotly
+psutil
+kaleido
+matplotlib

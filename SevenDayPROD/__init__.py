@@ -4,7 +4,7 @@ import logging
 import requests
 import pandas as pd
 import re
-
+from pretty_html_table import build_table
 from io import StringIO
 from typing import BinaryIO
 import azure.functions as func
@@ -131,7 +131,7 @@ async def main(mytimer: func.TimerRequest):
 
         df_droneResult = df_Master - df_drone
         df_droneResult = df_droneResult.loc[(df_droneResult[df_droneResult >= 100].any(axis=1)) | (df_droneResult[df_droneResult <= -100].any(axis=1))]
-
+        df_droneResult=df_droneResult.sort_index()
         df_droneResult=df_droneResult.reset_index()
         df_droneResultJSON  = df_droneResult
 
@@ -139,11 +139,30 @@ async def main(mytimer: func.TimerRequest):
         df_droneResult["Date_Time"] = df_droneResult["Date"].astype("string") + " " + df_droneResult["variable"]
         
         df_droneResult=df_droneResult.drop(["variable","Date"],axis=1)
-        df_droneResult=df_droneResult.set_index(['Date_Time'])
-        df_droneResult=df_droneResult.sort_index()
+
+
+
         df_droneResult['value'] = df_droneResult['value'].astype('int')
-        
-        df_droneResultHTML = df_droneResult.to_html()
+        df_droneResult = df_droneResult.iloc[:,[2,0,1]]
+        df_droneResult = df_droneResult.sort_values(by='Date_Time', ascending=True)
+        df_droneResult = df_droneResult[df_droneResult['value'] != 0]
+        html_table = build_table(df_droneResult
+            , 'blue_light'
+            , font_size='medium'
+            , font_family='Open Sans sans-serif'
+            , text_align='justify'
+            
+            , width_dict=['200px','150px', '150px']
+            , index=False
+            ,conditions={
+                'value': {
+                    'min': -1,
+                    'max': 1,
+                    'min_color': 'green',
+                    'max_color': 'red',
+                }
+            }) 
+        df_droneResultHTML = html_table
 
         if df_droneResult.empty == False:
 

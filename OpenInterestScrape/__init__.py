@@ -17,8 +17,9 @@ import certifi
 import ssl
 import sys
 from azure.storage.blob import BlobServiceClient
-import azure.functions as func
 
+
+import azure.functions as func
 
 
 def main(mytimer: func.TimerRequest):
@@ -32,7 +33,7 @@ def main(mytimer: func.TimerRequest):
     today = datetime.today() + timedelta(days=0)
     today = today.strftime('%Y-%m-%d')
     print(today)
-
+    filename = datetime.today().strftime('%d%m%Y')
     class NRGStreamApiGasGen:
 
         def __init__(self,username=None,password=None):
@@ -283,14 +284,12 @@ def main(mytimer: func.TimerRequest):
     stream_data['Settle']= pd.to_numeric(stream_data["Settle"],errors="ignore")
     stream_data['netOI']= pd.to_numeric(stream_data["netOI"],errors="ignore")
     stream_data.set_index('DateModified',inplace=True)
+    finalDF = stream_data.to_csv()
+    date_today = datetime.today().strftime('%d%m%Y')
+    date_today = date_today + '.csv'
     # stream_data= stream_data.drop(stream_data.columns['DateModified'], axis=1)
-
-
-    eventName = "monthlymaster.csv"
     blob_service_client = BlobServiceClient.from_connection_string("DefaultEndpointsProtocol=https;AccountName=sevendaypremium;AccountKey=YeFdLE5sLLsVceijHjRczp3GgZ70AtN4pHmTDlL73a98Om5SmWVL3WIA9xWo4hQ84u3FCirCqM3P+AStlvSSrQ==;EndpointSuffix=core.windows.net")
-    container_client = blob_service_client.get_container_client("monthlymaster")
-    blob_client = container_client.get_blob_client(eventName)
-    container_client = blob_client.upload_blob(dfMasterDrone,overwrite=True)
-
-
+    container_clientCOAL1 = blob_service_client.get_container_client("openinterestcsv")
+    blob_client1= container_clientCOAL1.get_blob_client(date_today)
+    container_clientCOAL1= blob_client1.upload_blob(finalDF,overwrite=True)
 

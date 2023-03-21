@@ -5,7 +5,7 @@ import requests
 import json
 import azure.functions as func
 from azure.storage.blob import BlobServiceClient
-
+from pretty_html_table import build_table
 def main(mytimer: func.TimerRequest) -> None:
 
 
@@ -72,6 +72,7 @@ def main(mytimer: func.TimerRequest) -> None:
 
 
     truthy = (AILForecast['system_marginal_price'] >= 150).any()
+    AILForecast = AILForecast.reset_index()
     time_diff = timing - lastModified
     print(time_diff)
     if time_diff > timedelta(hours=3):
@@ -80,8 +81,22 @@ def main(mytimer: func.TimerRequest) -> None:
         if truthy:
             try:
 
-                
-                AIL = AILForecast.to_html()
+                html_tableSMP = build_table(AILForecast
+                    , 'blue_light'
+                    , font_size='medium'
+                    , font_family='Open Sans sans-serif'
+                    , text_align='justify'
+                    , width='200px'
+                    , index=False
+                    ,conditions={
+                        'SMP': {
+                            'min': -1,
+                            'max': 1,
+                            'min_color': 'green',
+                            'max_color': 'black',
+                        }
+                    }) 
+                AIL = html_tableSMP
                 blob_service_client = BlobServiceClient.from_connection_string("DefaultEndpointsProtocol=https;AccountName=sevendaypremium;AccountKey=YeFdLE5sLLsVceijHjRczp3GgZ70AtN4pHmTDlL73a98Om5SmWVL3WIA9xWo4hQ84u3FCirCqM3P+AStlvSSrQ==;EndpointSuffix=core.windows.net")
                 container_client = blob_service_client.get_container_client("checksmp")
                 blob_client = container_client.get_blob_client(endDate)

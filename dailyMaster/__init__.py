@@ -6,6 +6,7 @@ import re
 import azure.functions as func
 from azure.storage.blob import BlobServiceClient
 import json
+from pretty_html_table import build_table
 def main(mytimer: func.TimerRequest) -> None:
 
 
@@ -109,6 +110,7 @@ def main(mytimer: func.TimerRequest) -> None:
     DFCOAL = DFCOAL.loc[DFCOAL[DFCOAL >= 5].any(axis=1) | (DFCOAL[DFCOAL <= -5].any(axis=1))]
 
     DFCOALJSON = DFCOAL.reset_index()
+    DFCOAL = DFCOAL.reset_index()
     type = DFCOALJSON.columns[1]
     datacoal = {
         'type' : type,
@@ -117,10 +119,25 @@ def main(mytimer: func.TimerRequest) -> None:
     datacoal = pd.DataFrame(data=datacoal)
     datacoal = datacoal.to_json()
     
+    html_tableCOAL = build_table(DFCOAL
+        , 'blue_light'
+        , font_size='medium'
+        , font_family='Open Sans sans-serif'
+        , text_align='justify'
+        , width='200px'
+        , index=False
+        ,conditions={
+            'Coal': {
+                'min': -1,
+                'max': 1,
+                'min_color': 'green',
+                'max_color': 'red',
+            }
+        }) 
+    DFCOALHTML = html_tableCOAL
     
     
-    
-    DFCOALHTML = DFCOAL.to_html()
+    #DFCOALHTML = DFCOAL.to_html()
     if DFCOAL.empty == False:  
         DFCOAL = DFCOAL.to_json(orient="index",date_format="iso")
         container_clientCOAL = blob_service_client.get_container_client("90coalevent")
@@ -145,6 +162,7 @@ def main(mytimer: func.TimerRequest) -> None:
     
         
     DFGASJSON = DFGAS.reset_index()
+    DFGAS = DFGAS.reset_index()
     type = DFGASJSON.columns[1]
     DFGASJSON = {
         'type' : type,
@@ -152,10 +170,25 @@ def main(mytimer: func.TimerRequest) -> None:
     }
     DFGASJSON = pd.DataFrame(data=DFGASJSON)
     DFGASJSON = DFGASJSON.to_json()
+    html_tableGAS = build_table(DFGAS
+        , 'blue_light'
+        , font_size='medium'
+        , font_family='Open Sans sans-serif'
+        , text_align='justify'
+        , width='200px'
+        , index=False
+        ,conditions={
+            'Gas': {
+                'min': -1,
+                'max': 1,
+                'min_color': 'green',
+                'max_color': 'red',
+            }
+        }) 
+    DFGASHTML = html_tableGAS
     
     
-    
-    DFGASHTML = DFGAS.to_html()
+
     if DFGAS.empty == False:
         DFGAS = DFGAS.to_json(orient="index",date_format="iso")
         container_clientGAS = blob_service_client.get_container_client("90gasevent")
@@ -181,6 +214,7 @@ def main(mytimer: func.TimerRequest) -> None:
     
         
     DFDUALJSON = DFDUAL.reset_index()
+    DFDUAL = DFDUAL.reset_index()
     type = DFDUALJSON.columns[1]
     DFDUALJSON = {
         'type' : type,
@@ -188,10 +222,23 @@ def main(mytimer: func.TimerRequest) -> None:
     }
     DFDUALJSON = pd.DataFrame(data=DFDUALJSON)
     DFDUALJSON = DFDUALJSON.to_json()
+    html_tableDUAL = build_table(DFDUAL
+        , 'blue_light'
+        , font_size='medium'
+        , font_family='Open Sans sans-serif'
+        , text_align='justify'
+        , width='200px'
+        , index=False
+        ,conditions={
+            'Dual': {
+                'min': -1,
+                'max': 1,
+                'min_color': 'green',
+                'max_color': 'red',
+            }
+        }) 
+    DFDUALHTML = html_tableDUAL
     
-    
-
-    DFDUALHTML = DFDUAL.to_html()
     if DFDUAL.empty == False:
         DFDUAL = DFDUAL.to_json(orient="index",date_format="iso")
         container_clientDUAL = blob_service_client.get_container_client("90dualevent")
@@ -217,6 +264,7 @@ def main(mytimer: func.TimerRequest) -> None:
     
         
     DFHYDROJSON = DFHYDRO.reset_index()
+    DFHYDRO = DFHYDRO.reset_index()
     type = DFHYDROJSON.columns[1]
     DFHYDROJSON = {
         'type' : type,
@@ -224,9 +272,23 @@ def main(mytimer: func.TimerRequest) -> None:
     }
     DFHYDROJSON = pd.DataFrame(data=DFHYDROJSON)
     DFHYDROJSON = DFHYDROJSON.to_json()
-    
+    html_tableHYDRO = build_table(DFHYDRO
+        , 'blue_light'
+        , font_size='medium'
+        , font_family='Open Sans sans-serif'
+        , text_align='justify'
+        , width='200px'
+        , index=False
+        ,conditions={
+            'Hydro': {
+                'min': -1,
+                'max': 1,
+                'min_color': 'green',
+                'max_color': 'red',
+            }
+        }) 
+    DFHYDROHTML = html_tableHYDRO
 
-    DFHYDROHTML = DFHYDRO.to_html()
     if DFHYDRO.empty == False:
         DFHYDRO = DFHYDRO.to_json(orient="index",date_format="iso")
         container_clientHYDRO = blob_service_client.get_container_client("90hydroevent")
@@ -249,6 +311,7 @@ def main(mytimer: func.TimerRequest) -> None:
     
         
     DFOTHERJSON = DFOTHER.reset_index()
+    DFOTHER = DFOTHER.reset_index()
     type = DFOTHERJSON.columns[1]
     DFOTHERJSON = {
         'type' : type,
@@ -257,7 +320,24 @@ def main(mytimer: func.TimerRequest) -> None:
     DFOTHERJSON = pd.DataFrame(data=DFOTHERJSON)
     DFOTHERJSON = DFOTHERJSON.to_json()
 
-    DFOTHERHTML = DFOTHER.to_html()
+
+    html_tableOTHER = build_table(DFOTHER
+        , 'blue_light'
+        , font_size='medium'
+        , font_family='Open Sans sans-serif'
+        , text_align='justify'
+        , width='200px'
+        , index=False
+        ,conditions={
+            'Other': {
+                'min': -1,
+                'max': 1,
+                'min_color': 'green',
+                'max_color': 'red',
+            }
+        }) 
+    DFOTHERHTML = html_tableOTHER
+
     if DFOTHER.empty == False:
         DFOTHER = DFOTHER.to_json(orient="index",date_format="iso")
         container_clientOTHER = blob_service_client.get_container_client("90otherevent")
@@ -284,6 +364,7 @@ def main(mytimer: func.TimerRequest) -> None:
     
         
     DFSOLARJSON = DFSOLAR.reset_index()
+    DFSOLAR = DFSOLAR.reset_index()
     type = DFSOLARJSON.columns[1]
     DFSOLARJSON = {
         'type' : type,
@@ -291,9 +372,24 @@ def main(mytimer: func.TimerRequest) -> None:
     }
     DFSOLARJSON = pd.DataFrame(data=DFSOLARJSON)
     DFSOLARJSON = DFSOLARJSON.to_json()
+    html_tableSOLAR = build_table(DFSOLAR
+        , 'blue_light'
+        , font_size='medium'
+        , font_family='Open Sans sans-serif'
+        , text_align='justify'
+        , width='200px'
+        , index=False
+        ,conditions={
+            'Solar': {
+                'min': -1,
+                'max': 1,
+                'min_color': 'green',
+                'max_color': 'red',
+            }
+        }) 
+    DFSOLARHTML = html_tableSOLAR
 
 
-    DFSOLARHTML = DFSOLAR.to_html()
     if DFSOLAR.empty == False:
         DFSOLAR = DFSOLAR.to_json(orient="index",date_format="iso")
         container_clientSOLAR = blob_service_client.get_container_client("90solarevent")
@@ -317,6 +413,7 @@ def main(mytimer: func.TimerRequest) -> None:
     
         
     DFWINDJSON = DFWIND.reset_index()
+    DFWIND = DFWIND.reset_index()
     type = DFWINDJSON.columns[1]
     DFWINDJSON = {
         'type' : type,
@@ -324,9 +421,23 @@ def main(mytimer: func.TimerRequest) -> None:
     }
     DFWINDJSON = pd.DataFrame(data=DFWINDJSON)
     DFWINDJSON = DFWINDJSON.to_json()
+    html_tableWIND = build_table(DFWIND
+        , 'blue_light'
+        , font_size='medium'
+        , font_family='Open Sans sans-serif'
+        , text_align='justify'
+        , width='200px'
+        , index=False
+        ,conditions={
+            'Wind': {
+                'min': -1,
+                'max': 1,
+                'min_color': 'green',
+                'max_color': 'red',
+            }
+        }) 
+    DFWINDHTML = html_tableWIND
 
-
-    DFWINDHTML = DFWIND.to_html()
     if DFWIND.empty == False:
         DFWIND = DFWIND.to_json(orient="index",date_format="iso")
         container_clientWIND = blob_service_client.get_container_client("90windevent")
@@ -351,6 +462,7 @@ def main(mytimer: func.TimerRequest) -> None:
     
         
     DFSTORAGEJSON = DFSTORAGE.reset_index()
+    DFSTORAGE = DFSTORAGE.reset_index()
     type = DFSTORAGEJSON.columns[1]
     DFSTORAGEJSON = {
         'type' : type,
@@ -358,9 +470,24 @@ def main(mytimer: func.TimerRequest) -> None:
     }
     DFSTORAGEJSON = pd.DataFrame(data=DFSTORAGEJSON)
     DFSTORAGEJSON = DFSTORAGEJSON.to_json()
-    
 
-    DFSTORAGEHTML = DFSTORAGE.to_html()
+    html_tableSTORAGE = build_table(DFSTORAGE
+        , 'blue_light'
+        , font_size='medium'
+        , font_family='Open Sans sans-serif'
+        , text_align='justify'
+        , width='200px'
+        , index=False
+        ,conditions={
+            'Storage': {
+                'min': -1,
+                'max': 1,
+                'min_color': 'green',
+                'max_color': 'red',
+            }
+        }) 
+    DFSTORAGEHTML = html_tableSTORAGE
+
     if DFSTORAGE.empty == False:
         DFSTORAGE = DFSTORAGE.to_json(orient="index",date_format="iso")
         container_clientSTORAGE = blob_service_client.get_container_client("90storageevent")

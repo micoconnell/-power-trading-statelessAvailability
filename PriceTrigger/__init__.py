@@ -5,6 +5,7 @@ import requests
 import json
 import azure.functions as func
 from azure.storage.blob import BlobServiceClient
+from pretty_html_table import build_table
 
 def main(mytimer: func.TimerRequest) -> None:
 
@@ -80,10 +81,12 @@ def main(mytimer: func.TimerRequest) -> None:
     print(lastModified,secondLastModified,timing)
     time_diff =  timing -lastModified
     print(time_diff)
+    AIL = AIL.reset_index()
     if time_diff > timedelta(hours=3):
         print(AIL)
         truthy = (AIL['forecast_pool_price'] >= 150).any()
         truthy500 = (AIL['forecast_pool_price'] >= 500).any()
+        
         #AILForecast = AILForecast.loc[AILForecast[AILForecast >= 150].any(axis=1)]
         #AILForecast=AILForecast.drop(["pool_price","rolling_30day_avg"],axis=1)
         if truthy:
@@ -92,7 +95,22 @@ def main(mytimer: func.TimerRequest) -> None:
                 eventName = ".html"
                 endDate = endDate + eventName
                 
-                AIL = AIL.to_html()
+                html_tableForecast100 = build_table(AIL
+                    , 'blue_light'
+                    , font_size='medium'
+                    , font_family='Open Sans sans-serif'
+                    , text_align='justify'
+                    , width='200px'
+                    , index=False
+                    ,conditions={
+                        'Price Forecast': {
+                            'min': -1,
+                            'max': 1,
+                            'min_color': 'green',
+                            'max_color': 'black',
+                        }
+                    }) 
+                AIL = html_tableForecast100
                 blob_service_client = BlobServiceClient.from_connection_string("DefaultEndpointsProtocol=https;AccountName=sevendaypremium;AccountKey=YeFdLE5sLLsVceijHjRczp3GgZ70AtN4pHmTDlL73a98Om5SmWVL3WIA9xWo4hQ84u3FCirCqM3P+AStlvSSrQ==;EndpointSuffix=core.windows.net")
                 container_client = blob_service_client.get_container_client("checktext")
                 blob_client = container_client.get_blob_client(endDate)
@@ -106,7 +124,22 @@ def main(mytimer: func.TimerRequest) -> None:
                     endDate = endDateHTML
                     eventName = ".html"
                     endDate = endDate + eventName
-                    
+                    html_tableForecast500 = build_table(AIL
+                    , 'blue_light'
+                    , font_size='medium'
+                    , font_family='Open Sans sans-serif'
+                    , text_align='justify'
+                    , width='200px'
+                    , index=False
+                    ,conditions={
+                        'Price Forecast': {
+                            'min': -1,
+                            'max': 1,
+                            'min_color': 'green',
+                            'max_color': 'black',
+                        }
+                    }) 
+                    AIL = html_tableForecast500
                     
                     blob_service_client = BlobServiceClient.from_connection_string("DefaultEndpointsProtocol=https;AccountName=sevendaypremium;AccountKey=YeFdLE5sLLsVceijHjRczp3GgZ70AtN4pHmTDlL73a98Om5SmWVL3WIA9xWo4hQ84u3FCirCqM3P+AStlvSSrQ==;EndpointSuffix=core.windows.net")
                     container_client = blob_service_client.get_container_client("checktext500")
