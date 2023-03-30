@@ -51,8 +51,8 @@ def main(mytimer: func.TimerRequest) -> None:
     def correct_Date(df):
         df=df
         
-        i = 4
-        j = 5
+        i = 0
+        j = 1
         while j <= 24:
             today = date.today().replace(day=1)
 
@@ -113,7 +113,70 @@ def main(mytimer: func.TimerRequest) -> None:
             
     correct_Date(df)
 
+    # def correct_DateCLose(df):
+    #     df=df
+        
+    #     i = 1
+    #     j = 2
+    #     while j <= 3:
+    #         today = date.today().replace(day=1)
 
+
+    #         four_months = today + relativedelta(months=i, days=1)
+    #         four_months = str(four_months)
+    #         four_months= four_months.replace("-","")
+            
+            
+    #         four_monthsExact = today + relativedelta(months=i, days=0)
+    #         four_monthsExact = str(four_monthsExact)
+    #         four_monthsExact= four_monthsExact.replace("-","")
+            
+    #         four_monthsend = today + relativedelta(months=i, days=-1)
+    #         four_monthsend = str(four_monthsend)
+    #         four_monthsend= four_monthsend.replace("-","")
+            
+    #         five_months = today + relativedelta(months=j, days=0)
+    #         five_months = str(five_months)
+    #         five_months= five_months.replace("-","")
+                        
+    #         five_monthsend = today + relativedelta(months=j, days=-1)
+    #         five_monthsend = str(five_months)
+    #         five_monthsend= five_monthsend.replace("-","")
+            
+    #         i = i+1
+    #         j = j+1
+    #         dfa = df[df['DateNum'] > four_monthsend]
+    #         dfa = dfa[dfa['DateNum'] < five_months]
+    #         #dfa = dfa[dfa['DateNum'] <= four_monthsend]
+    #         #dfa = dfa[dfa['DateNum'] < five_months]
+
+    #         residual_calc = dfa['AESO'] -dfa['KnownUnknown']
+
+    #         residual_calc = residual_calc.mean()
+    #         residual_calc_AESO = dfa['AESO'].mean()
+    #         #print(residual_calc.round())
+    #         residual_calc = residual_calc.astype('float')
+    #         dfa['AESO'] = dfa['AESO'].astype('float')
+    #         final_residual = residual_calc_AESO - residual_calc
+    #         dfa['StackModelOutages'] = dfa['AESO'] - final_residual
+
+    #         #residual_calc =  dfa['AESO']
+    #         # print(dfa['AESO'] - residual_calc)
+
+    #         #print(four_monthsend)
+
+    #         for x in range(0,len(dfa)):
+    #             dateResponse = dfa.iloc[x]
+    #             valueResponse = dateResponse['StackModelOutages']
+    #             dateResponse = dateResponse['DateNum']
+    #             print(valueResponse,dateResponse)
+    #             response = requests.get("https://azureeventtest.azurewebsites.net/api/httptrigger1?gentype=gasAB&asset=StackModelOutages&datestart={0}&dateend={1}&volume={2}".format(dateResponse,dateResponse,valueResponse))
+            
+            
+            
+            
+            
+    # correct_DateCLose(df)
 
 
 

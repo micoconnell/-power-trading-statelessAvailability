@@ -42,7 +42,7 @@ def main(mytimer: func.TimerRequest):
     cursor = init_connection()
 
 
-    result = cursor.execute("SELECT * FROM dbo.OpenInterestProd WHERE DateModified > '2022-12-01' ORDER BY DateModified DESC ")
+    result = cursor.execute("SELECT * FROM dbo.OpenInterestProd WHERE DateModified > '2023-03-29' ORDER BY DateModified DESC ")
     rows = result.fetchall()
     cols = []
     #result = cursor.execute('SELECT * FROM dbo.AILForecasts ORDER BY dateModified DESC')

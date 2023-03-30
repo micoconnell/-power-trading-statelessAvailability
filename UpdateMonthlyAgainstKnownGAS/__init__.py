@@ -36,7 +36,7 @@ def main(mytimer: func.TimerRequest) -> None:
     twentyfour_months = str(twentyfour_months)
     twentyfour_months= twentyfour_months.replace("-","")
 
-    four_months = today + relativedelta(months=+4, days=-1)
+    four_months = today + relativedelta(months=+1, days=-1)
     four_months = str(four_months)
     four_months= four_months.replace("-","")
 

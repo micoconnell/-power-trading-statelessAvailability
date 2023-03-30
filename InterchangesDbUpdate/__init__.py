@@ -20,7 +20,7 @@ def main(mytimer: func.TimerRequest) -> None:
     dfTransmission = pd.read_csv(dfTransmission,index_col=None)
 
     filtered_df = dfTransmission[~dfTransmission['Outage Status'].str.contains('Denied')]
-    dfTransmission = filtered_df.drop(['Unnamed: 0','Outage Status', 'Outage #','Outage Type'],axis=1)
+    dfTransmission = filtered_df.drop(['Outage Status', 'Outage #','Outage Type'],axis=1)
     dfTransmission['Start Date']= pd.to_datetime(dfTransmission['Start Date'])
     dfTransmission['Complete Date']= pd.to_datetime(dfTransmission['Complete Date'])
     dfTransmission['Start Date'] = dfTransmission['Start Date'].dt.strftime('%Y%m%d')
